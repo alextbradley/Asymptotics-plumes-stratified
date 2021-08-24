@@ -100,8 +100,8 @@ end
 
 %% Asymptotic results
 %Leading order equations
-rhs = @(xi,Y) forcing_LO(xi,Y, Pb, delta, Pt, dzb_x0,zb_x0);
-M = @(xi,Y)  massmat_LO(xi,Y, c1,c2,delta);
+rhs = @(xi,Y) forcing_LO(xi,Y, Pb, Pt, dzb_x0,zb_x0);
+M = @(xi,Y)  massmat_LO(xi,Y, c1,c2);
 options = odeset('Mass',M, 'RelTol', 1e-7);
 [xi_LO,Y_LO]  = ode15s(rhs,[-xi_max,xi_max],Y0,options);
 D_LO         = Y_LO(:,1);
@@ -186,7 +186,7 @@ f = [delta*U*dzbF(x0 + delta*xi) + delta*eps1*k3*U*delta_T;
 
 end
 
-function M = massmat_LO(xi,Y, c1,c2,delta)
+function M = massmat_LO(xi,Y, c1,c2)
 %Return the mass matrix associated with one-d plume dynamics.
 % Y = [d,u,r,q]
 D = Y(1);
@@ -201,7 +201,7 @@ M = [U, D, 0, 0;
 
 end
 
-function f = forcing_LO(xi,Y, Pb, delta, Pt, dzb_x0,zb_x0)
+function f = forcing_LO(xi,Y, Pb, Pt, dzb_x0,zb_x0)
 
 %return the forcing array
 D = Y(1);
