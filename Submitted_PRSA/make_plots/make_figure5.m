@@ -94,8 +94,8 @@ plot(U_tilde, delta_P_tilde, 'k--','linewidth', 2.5)
 %tidy plot
 box on
 ylim([-2, delta_P_ff/p_scaling])
-ylabel('$\tilde{p}$', 'interpreter','latex')
-xlabel('$\tilde{u}$', 'interpreter','latex')
+ylabel('$\tilde{\Delta \varrho}$', 'interpreter','latex')
+xlabel('$\tilde{\mathcal{U}}$', 'interpreter','latex')
 
 % %% Plot 2: v_tilde and p_tilde versus chi
 % figure(2); clf; 
@@ -117,7 +117,7 @@ plot(chi2/chi_scaling, delta_P2/p_scaling,'color',  colmap(2,:), 'linewidth',3)
 plot(chi_reduced, delta_P_tilde,'k--', 'linewidth',2.5)
 box on
 xlabel('$\tilde{\chi}$', 'interpreter','latex')
-ylabel('$\tilde{p}$', 'interpreter','latex')
+ylabel('$\tilde{\Delta \varrho}$', 'interpreter','latex')
 ylim([-2,10])
 xlim([-10,5])
 xticks(-10:5:5)

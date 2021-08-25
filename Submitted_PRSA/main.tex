@@ -377,7 +377,7 @@ Henceforth, hats are dropped on both parameters and variables, and all quantitie
 
 \begin{figure}
 \centering
-\includegraphics[width = \textwidth]{./figures/fig3_example_solutions}
+\includegraphics[width = \textwidth]{Submitted_PRSA/make_plots/plots/figure3.png}
 \caption{Numerical solutions of dimensionless plume equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. Solutions are shown for (a) no stratification, (all parameters as in table~\ref{T:Dimensionless_Parameters} except $P_b = 0$, $\Pt = 0$, $\epsfour = 0$) and (b)  a typical two-layer ambient stratification (all parameters as in table~\ref{T:Dimensionless_Parameters}). Here we take a linear ice shelf base, $Z_b(X) = X$. The dashed horizontal line indicates $X_{\text{stop}}$, where the plume velocity reaches zero. The dot-dashed horizontal line indicates $Z = |Z_{gl}|$, the dimensionless depth of the grounding line, which restricts the solution domain in practice (see main text). In (b), the solid grey line indicates $X = X_0$, the centre of the pycnocline. Shading (and numbers in the third panel) indicate schematically the regions described in \S\ref{S:ExampleSolutions} and introduced formally in \S\ref{S:Asymptotics}. }\label{fig:ExampleSols}
 \end{figure}
 
@@ -634,39 +634,43 @@ These will also form the matching conditions on the region around $X_c$, which w
 
 %Before moving on to analyse Region 5, we note that, as we shall see in \S\ref{S:Numerics}, the point $X_c$ is only located below sea level (where it is physically relevant) in ice shelves with uncommon parameters -- corresponding to very deep grounding lines or very cold ambient conditions, for example. We shall also see that the melt rate is small ($\order{\epsone}$) for $X \gtrsim X_c$: the behaviour above $X_c$ is not important for the leading order melt rate. However, we include the analysis for completeness, because of its relevance to other physical systems in which thin flows experience a competition between buoyancy and drag (such as Katabatic winds), and because the results of the analysis have implications for the 'layered-plume' hypothesis proposed by~\cite{Magorrian2016JGeoResOcean}. 
 
-\red{reviewer comments here (25/48 completed)}
+
 \subsection{Region four: stopping region}\label{S:Asymptotics:Region4}
+%scaled variables for this region
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\p}{\Delta \varrho}
+\renewcommand{\t}{\Delta \mathcal{T}}
+
 The analysis of the previous section breaks down as $X \to X_c$, where $U \to 0$. To analyze the behaviour around $X = X_c$, referred to as the `stopping region', we introduce the rescaled spatial variable $\chi$. The appropriate spatial scaling for a dominant balance in~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} is achieved by setting 
 \begin{equation}\label{E:Region4:X_scaling}
 X = X_c + \epsone^{3/4}\chi,
 \end{equation}
 where $\chi = \order{1}$, and introducing scaled variables
 \begin{equation}\label{E:Region4:var_scaling}
-U = \epsone^{1/4}\mathcal{U}, \quad D = \epsone^{-1/4}\mathcal{D}, \quad \Delta \rho = \epsone^{3/4}\Delta \varrho, \quad  \Delta T = \epsone^{-1/4} \Delta \mathcal{T}.
+U = \epsone^{1/4}\U, \quad D = \epsone^{-1/4}\D, \quad \Delta \rho = \epsone^{3/4}\p, \quad  \Delta T = \epsone^{-1/4} \t.
 \end{equation}
 
-%set these as the variables
-\newcommand{\p}{\varrho}
-\renewcommand{\t}{\Delta \mathcal{T}}
+
 
 Inserting~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} into the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}, and retaining only leading order terms gives
 \begin{align}
-\dd{(du)}{\chi} &=0,\label{E:Region4:mass_scaled}\\
-\dd{(du^2)}{\chi} &=  d \p Z_b'(X_c) -u^2,\label{E:Region4:mom_scaled}\\
-\dd{(du\p)}{\chi} &=\lambda  u\t,\label{E:Region4:buoyancy_scaled}\\
-k_2 \dd{(du \t)}{\chi} &=- u \t - du Z_b'(X_c).\label{E:Region4:thermal_scaled}
+\dd{(\D\U)}{\chi} &=0,\label{E:Region4:mass_scaled}\\
+\dd{(\D \U^2)}{\chi} &=  \D \p Z_b'(X_c) -\U^2,\label{E:Region4:mom_scaled}\\
+\dd{(\D\U\p)}{\chi} &=\lambda  \U\t,\label{E:Region4:buoyancy_scaled}\\
+k_2 \dd{(\D \U \t)}{\chi} &=- \U \t - \D \U Z_b'(X_c).\label{E:Region4:thermal_scaled}
 \end{align}
 
 Matching with region three (see~\eqref{E:Region3:X_to_Xc1}--\eqref{E:Region3:X_to_Xc2}) requires that the solution to~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} satisfies
 \begin{align}
-u &\sim \lambda^{1/3}Z_b'(X_c)^{-2/3}Q_c^{1/3} \chi^{1/3}, &  d &\sim \lambda^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}\chi^{-1/3}\label{E:Region4:far_field1},\\
-\p &\sim - \lambda Z_b'(X_c) \chi, & \t &\sim -\lambda^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}\chi^{-1/3}\label{E:Region4:far_field2}
+\U &\sim \lambda^{1/3}Z_b'(X_c)^{-2/3}Q_c^{1/3} (-\chi)^{1/3}, &  \D &\sim \lambda^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}(-\chi)^{-1/3}\label{E:Region4:far_field1},\\
+\p &\sim - \lambda Z_b'(X_c) \chi, & \t &\sim -\lambda^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}(-\chi)^{-1/3}\label{E:Region4:far_field2}
 \end{align}
 as $\chi \to -\infty$. (Again, numerical solutions of~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} are obtained on a restricted domain $-\chi_0 < \chi < \chi_0$ where $|\chi_0| \ll \epsone^{3/4}$.)
 
 We begin by noting that flux is again conserved,
 \begin{equation}\label{E:Region4:Constant_Flux}
-du  = Q_c.
+\D\U  = Q_c.
 \end{equation}
 Inserting~\eqref{E:Region4:Constant_Flux} into~\eqref{E:Region4:thermal_scaled} and combining with~\eqref{E:Region4:buoyancy_scaled} gives an expression that can be directly integrated once to give
 \begin{equation}\label{E:Region4:Linear_p_t}
@@ -676,16 +680,16 @@ Here $C$ is a constant that would, in practice, be determined by analysing the l
 
 The relationships~\eqref{E:Region4:Constant_Flux} and~\eqref{E:Region4:Linear_p_t} allow us to reduce~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} to a system of two equations, which can be rescaled so that only a single parameter, $k_2 \lambda$, enters:
 \begin{align}
-\tilde{u} \dd{\tilde{u}}{\tilde{\chi}} = \tilde{\p} - \tilde{u}^3,\label{E:Region4:rescaled1}\\
-k_2 \lambda \dd{\tilde{\p}}{\tilde{\chi}} = -\tilde{u}\left[\tilde{p} + \tilde{\chi}\right],\label{E:Region4:rescaled2}
+\tilde{\U} \dd{\tilde{\U}}{\tilde{\chi}} = \tilde{\p} - \tilde{\U}^3,\label{E:Region4:rescaled1}\\
+k_2 \lambda \dd{\tilde{\p}}{\tilde{\chi}} = -\tilde{\U}\left[\tilde{p} + \tilde{\chi}\right],\label{E:Region4:rescaled2}
 \end{align}
 where
 \begin{equation}\label{E:Region4:Rescaling}
-\tilde{\chi} = \frac{\lambda^{1/4}Z_b'(X_c)^{1/2}}{Q_c^{1/2}}\left(\chi - \frac{C}{\kappa Z_b'(X_c)}\right), ~\quad  \tilde{u} = \frac{1}{\lambda^{1/4}Z_b'(X_c)^{1/2}Q_c^{1/2}}u,\quad \tilde{\p}= \frac{1}{\lambda^{3/4}Z_b'(X_c)^{ 1/2}Q_c^{1/2}}\p.
+\tilde{\chi} = \frac{\lambda^{1/4}Z_b'(X_c)^{1/2}}{Q_c^{1/2}}\left(\chi - \frac{C}{\kappa Z_b'(X_c)}\right), ~\quad  \tilde{\U} = \frac{1}{\lambda^{1/4}Z_b'(X_c)^{1/2}Q_c^{1/2}}\U,\quad \tilde{\p}= \frac{1}{\lambda^{3/4}Z_b'(X_c)^{ 1/2}Q_c^{1/2}}\p.
 \end{equation} 
 In terms of these rescaled variables, the matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} read
 \begin{equation}\label{E:Region4:Rescaled_farfield}
-\tilde{\p} \sim -\tilde{\chi},~ \tilde{u}\sim (-\tilde{\chi})^{1/3}\quad \text{as}~\tilde{\chi}\to -\infty.
+\tilde{\p} \sim -\tilde{\chi},~ \tilde{\U}\sim (-\tilde{\chi})^{1/3}\quad \text{as}~\tilde{\chi}\to -\infty.
 \end{equation}
 
 
@@ -695,10 +699,10 @@ In terms of these rescaled variables, the matching conditions~\eqref{E:Region4:f
 \caption{Numerical solutions of the stopping region equations (original model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} and~\eqref{E:Region4:Rescaling}) with $\epsone = 3\times 10^{-2}$ (i.e. as in table~\ref{T:Dimensionless_Parameters}, purple curves) and with $\epsone = 3\times 10^{-3}$ (green curves) which are shown in (a) $(\tilde{u}, \tilde{\p})$ space and (b) $(\tilde{\chi}, \tilde{\p})$ space. The black dashed curve indicates the numerical solution of~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:rescaled2}, the grey curve indicates the nullcline $\tilde{u}^3 = \tilde{\p}$, and the solid black indicates line $\tilde{p} = 0$ Each of the solutions here uses a linear draft, $Z_b(X) = X$, with $Q_c = 0.5, X_c = 0.5$ and $\lambda, k_i$ according to the values in table~\ref{T:Dimensionless_Parameters}. The matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} are applied at $\tilde{\chi}_0 = 10$ in both cases. }\label{fig:Region4}
 \end{figure}
 
-The system~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} must be solved numerically. In figure~\ref{fig:Region4}, we present a comparison between numerical solutions of the reduced equations~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} and the solutions of the full equations (model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling}). We see good agreement, with solutions predominantly following the nullcline $\tilde{\p} = \tilde{u}^3$ but deviate from it when the rescaled buoyancy deficit $\tilde{\p}$ approaches zero. The buoyancy deficit goes negative, indicating that the plume has become negatively buoyant; the plume's upward motion continues for a short distance because of its inertia, before ultimately reaching $\tilde{u} = 0$ where it terminates. For the purpose of constructing an approximation to the melt rate, it is worth noting that the rescaled pressure is approximately linear (figure~\ref{fig:Region4}b); using this, the nullcline solution for $\tilde{u}$, which holds nearly everywhere in this regions, can be approximated by $\tilde{u} = \tilde{\chi}^{1/3}$.
+The system~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} must be solved numerically. In figure~\ref{fig:Region4}, we present a comparison between numerical solutions of the reduced equations~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} and the solutions of the full equations (model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling}). We see good agreement, with solutions predominantly following the nullcline $\tilde{\p} = \tilde{\U}^3$ but deviate from it when the rescaled buoyancy deficit $\tilde{\p}$ approaches zero. The buoyancy deficit goes negative, indicating that the plume has become negatively buoyant; the plume's upward motion continues for a short distance because of its inertia, before ultimately reaching $\tilde{u} = 0$ where it terminates. For the purpose of constructing an approximation to the melt rate, it is worth noting that the rescaled pressure is approximately linear (figure~\ref{fig:Region4}b); using this, the nullcline solution for $\tilde{u}$, which holds nearly everywhere in this region, can be approximated by $\tilde{\U} = \tilde{\chi}^{1/3}$.
 
 
-
+\red{reviewer comments here (27/48 completed)}
 
 \section{Approximating the melt rate}\label{S:MeltRate}
 In this section, we describe our analytic approximation $M_p(X)$ to the melt rate $M(X) = U(X)\Delta T(X)$ that emerges from the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. This approximation builds upon the asymptotic analysis of the previous section, and we deal with each of the four regions identified in \S\ref{S:Asymptotics} in turn.

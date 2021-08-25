@@ -1,4 +1,4 @@
-function sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0,zbF,dzbF,Xmax)
+function sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, kappa, x0,zbF,dzbF,Xmax)
 %return the solution structure associated with the plume equations with a
 %non constant geometry specified by zb = zb(xb). We interpolate to the grid
 %with a simple linear interpolation to nearest neighbour 
@@ -11,17 +11,17 @@ function sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0,zbF,dzbF,
 %           Slope of ice shelf draft
 %
 
-%initial conditions from analytic solution (based on ignoring (a) depth
-%dependence terms, (b) melting in mass equation and (c) fat plume term
-xcross = 1e-4; %mu in the paper
+%initial conditions from similarity solution (based on ignoring (a) depth
+%dependence terms, (b) melting in mass equation
+xcross = 1e-4; 
 d0 = 2/3 * xcross;
-u0 = sqrt(xcross) * sqrt(lambda/(1 + eps2) * 1/(2*eps1 + 3/2));
-drho0 = lambda/(1 + eps2);
+u0 = sqrt(xcross) * sqrt(kappa/(1 + eps2) * 1/(2*eps1 + 3/2));
+drho0 = kappa/(1 + eps2);
 dt0 = 1/(1 + eps2);
 Y0 =  [d0;u0;drho0;dt0];
 
 %solve odes:
-rhs = @(x,Y)  forcing(x,Y,delta,eps3,eps4, Pb,Pt,lambda,x0, zbF,dzbF);
+rhs = @(x,Y)  forcing(x,Y,delta,eps3,eps4, Pb,Pt,kappa,x0, zbF,dzbF);
 M = @(x,Y) massmat(x,Y, eps1,eps2);
  options = odeset('Mass',M, 'Events',@plumeEventsFcn,...
                   'RelTol', 1e-8);
@@ -43,7 +43,7 @@ M = [U, D, 0, 0;
 %  
 end
 
-function f = forcing(x,Y,delta,eps3,eps4, Pb,Pt, lambda,x0, zbF,dzbF)
+function f = forcing(x,Y,delta,eps3,eps4, Pb,Pt, kappa,x0, zbF,dzbF)
 %return the forcing array
 D = Y(1);
 U = Y(2);
@@ -52,7 +52,7 @@ delta_T = Y(4);
 
 f = [U*dzbF(x) + eps3*U*delta_T;
     D*delta_rho*dzbF(x) - U^2;
-    -Pb/delta * sech((x-x0)/delta)^2 * D*U*dzbF(x)+ U*delta_T*(lambda - eps4*tanh((x-x0)/delta));
+    -Pb/delta * sech((x-x0)/delta)^2 * D*U*dzbF(x)+ U*delta_T*(kappa - eps4*tanh((x-x0)/delta));
     -Pt*(1 + tanh((x-x0)/delta))*dzbF(x)*U + (1-zbF(x))*dzbF(x)*U - D*U*dzbF(x) - U*delta_T];
 
 end

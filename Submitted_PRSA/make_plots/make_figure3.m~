@@ -109,13 +109,10 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     count = count + 1;
     if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
         txa = text(-0.3, 1.2, '(a)', 'FontSize', 16, 'interpreter', 'latex');
-        txastop = text(0.05, 1.13, '$X = X_{\mathrm{stop}} \approx 1.1$', 'FontSize', 14, 'interpreter', 'latex');
-        txax0 = text(0.69, 0.375, '$Z = |Z_{gl}| $', 'FontSize', 14, 'interpreter', 'latex');
-
     else
         plot(xl,X0*[1,1],'-.', 'color', dlc);
         txb = text(-0.3, 0.6, '(b)', 'FontSize', 16, 'interpreter', 'latex');
-        txbx0 = text(0.55, 0.22, '$X = X_0 = 0.2$', 'FontSize', 14, 'interpreter', 'latex');
+        txbx0 = text(0.6, 0.22, '$X = X_0 = 0.2$', 
         txbstop = text(0.05, 0.572, '$X = X_{\mathrm{stop}} \approx 0.55$', 'FontSize', 14, 'interpreter', 'latex');
     end
 
@@ -160,12 +157,7 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     yticks([])
     count = count + 1;
     if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
-    else
-        plot(xl,X0*[1,1],'-.', 'color', dlc);
-        tx1 = text(-.2, 0.07, '$1$', 'FontSize', 16, 'interpreter', 'latex');
-        tx2 = text(-.2, 0.22,  '$2$', 'FontSize', 16, 'interpreter', 'latex');
-        tx3 = text(-.2, 0.33, '$3$', 'FontSize', 16, 'interpreter', 'latex');
-        tx4 = text(-.2, 0.52,  '$4$', 'FontSize', 16, 'interpreter', 'latex');
+    else plot(xl,X0*[1,1],'-.', 'color', dlc);
     end
     
     %plot solution melt rate
@@ -194,6 +186,3 @@ end
 %figure sizing
 fig = gcf;
 fig.Position(3:4) =[1067 650];
-
-%saving
-% saveas(gcf, 'plots/figure3.png')
