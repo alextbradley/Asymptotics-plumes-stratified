@@ -613,18 +613,19 @@ U = \frac{Q'}{Z_b'},
 \end{equation}
 which, when combined with~\eqref{E:Region3:mom}--\eqref{E:Region3:thermal}, gives a second order ODE for $Q$. Integrating this ODE once alongside~\eqref{E:Region3:MatchingConditions} gives
 \begin{equation}\label{E:Region3:Q_ODE}
-\left(Q'\right)^3 =\lambda \left(Z_b'\right)^4 \left\{\left(1 - Z_b\right)Q - 2\Pt\left(Q - Q_\in\right) -\left[1 - Z_b(X_0)\right]Q_\in\right\} + \frac{U_\out^3}{Z_b'(X_0)}\left(Z_b'\right)^4.
+%\left(Q'\right)^3 =\lambda \left(Z_b'\right)^4 \left\{\left(1 - Z_b\right)Q - 2\Pt\left(Q - Q_\in\right) -\left[1 - Z_b(X_0)\right]Q_\in\right\} + \frac{U_\out^3}{Z_b'(X_0)}\left(Z_b'\right)^4.
+\frac{\left[Q'(X)\right]^3}{\left[Z_b'(X)\right]^4} = \kappa \left\{ \left[1 - Z_b(X) - 2P_T\right] Q(X) - \left[1 - Z_b(X_0) - 2P_T\right]Q_\text{in}\right\} + \frac{U_\text{out}^3}{Z_b'(X_0)}
 \end{equation}
 
 %can't solve this numerically
 Unlike~\eqref{E:Region1:flux_ODE} -- the corresponding ODE for region one -- equation~\eqref{E:Region3:Q_ODE} cannot be solved exactly; it is not possible to express the leading order contribution to the melt rate analytically in region three. Whilst this is problematic for constructing an approximation to the melt rate, we describe one possible workaround in \S\ref{S:MeltRate}. 
 
-This workaround exploits the information that we can glean from~\eqref{E:Region3:Q_ODE}. Firstly, we note that since $Q_\in, ~U_\out >0$, and $Q = Q_\in$ at $X = X_0$, then $Q'(X_0) > 0$. Hence, $Q > Q_\in$ in some region around $X_0$; continuing this argument, we conclude that  $Q'(X)> 0$ in region three (this argument will break down when $Z_b(X) \to 1$, but this is beyond the depth of a typical ice shelf base, as discussed in \S\ref{S:Model}). The flux $Q$ will continue to increase until it reaches a critical point $X = X_c$, where $Q' \to 0$. From~\eqref{E:Region3:Q_ODE}, we see that the flux $ Q_c =Q(X_c)$ at this point satisfies 
+This workaround exploits the information that we can glean from~\eqref{E:Region3:Q_ODE}. Firstly, we note that from mass conservation~\eqref{E:Region3:mass}, the flux $Q$ must be increasing (the velocity $U$ is positive). The flux $Q$ will therefore continue to increase until it reaches a critical point $X = X_c$, where $Q' \to 0$ and the leading order equations~\eqref{E:Region3:mass}--\eqref{E:Region3:thermal} break down. From~\eqref{E:Region3:Q_ODE}, we see that the flux $Q_c =Q(X_c)$ at this point satisfies 
 \begin{equation}
 \left[1 - Z_b(X_c)\right]Q_c - 2\Pt\left(Q_c - Q_\in\right) -\left[1 - Z_b(X_0)\right]Q_\in +  \frac{U_\out^3}{\lambda Z_b'(X_0)} = 0.
 \end{equation}
 
-Secondly, understanding the asymptotic behaviour as $X \to X_c$ also useful. From~\eqref{E:Region3:U_Q_relation}, we see that $U \to 0$ in this limit, and our assumption that $U = \order{1}$ therefore breaks down. To proceed beyond this point a rescaling of the model equations to reflect a change in asymptotic order is required. We show in appendix~\ref{A:FluxODERegion3} that the dependent variables have the following behaviour in the limit $X \to X_c$:
+Secondly, understanding the asymptotic behaviour as $X \to X_c$ is also useful. From~\eqref{E:Region3:U_Q_relation}, we see that $U \to 0$ in this limit, and our assumption that $U = \order{1}$ therefore breaks down. To proceed beyond this point, a rescaling of the model equations to reflect a change in asymptotic order is required. \red{We show in appendix~\ref{A:FluxODERegion3}} that the dependent variables have the following behaviour in the limit $X \to X_c$:
 \begin{align}
 U &\sim \lambda^{1/3} Z_b'(X_c)^{2/3} Q_c^{1/3}(X_c - X)^{1/3}, & D &\sim \lambda^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}(X_c - X)^{-1/3},\label{E:Region3:X_to_Xc1}\\
 \Delta \rho &\sim  \lambda Z_b'(X_c) (X_c - X), & \Delta T &\sim -\lambda^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}(X_c - X)^{-1/3}\label{E:Region3:X_to_Xc2}
@@ -633,7 +634,7 @@ These will also form the matching conditions on the region around $X_c$, which w
 
 %Before moving on to analyse Region 5, we note that, as we shall see in \S\ref{S:Numerics}, the point $X_c$ is only located below sea level (where it is physically relevant) in ice shelves with uncommon parameters -- corresponding to very deep grounding lines or very cold ambient conditions, for example. We shall also see that the melt rate is small ($\order{\epsone}$) for $X \gtrsim X_c$: the behaviour above $X_c$ is not important for the leading order melt rate. However, we include the analysis for completeness, because of its relevance to other physical systems in which thin flows experience a competition between buoyancy and drag (such as Katabatic winds), and because the results of the analysis have implications for the 'layered-plume' hypothesis proposed by~\cite{Magorrian2016JGeoResOcean}. 
 
-
+\red{reviewer comments here (25/48 completed)}
 \subsection{Region four: stopping region}\label{S:Asymptotics:Region4}
 The analysis of the previous section breaks down as $X \to X_c$, where $U \to 0$. To analyze the behaviour around $X = X_c$, referred to as the `stopping region', we introduce the rescaled spatial variable $\chi$. The appropriate spatial scaling for a dominant balance in~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} is achieved by setting 
 \begin{equation}\label{E:Region4:X_scaling}
@@ -641,8 +642,12 @@ X = X_c + \epsone^{3/4}\chi,
 \end{equation}
 where $\chi = \order{1}$, and introducing scaled variables
 \begin{equation}\label{E:Region4:var_scaling}
-U = \epsone^{1/4}u, \quad D = \epsone^{-1/4}d, \quad \Delta \rho = \epsone^{3/4}\p, \quad  \Delta T = \epsone^{-1/4} \t.
+U = \epsone^{1/4}\mathcal{U}, \quad D = \epsone^{-1/4}\mathcal{D}, \quad \Delta \rho = \epsone^{3/4}\Delta \varrho, \quad  \Delta T = \epsone^{-1/4} \Delta \mathcal{T}.
 \end{equation}
+
+%set these as the variables
+\newcommand{\p}{\varrho}
+\renewcommand{\t}{\Delta \mathcal{T}}
 
 Inserting~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} into the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}, and retaining only leading order terms gives
 \begin{align}
@@ -655,7 +660,7 @@ k_2 \dd{(du \t)}{\chi} &=- u \t - du Z_b'(X_c).\label{E:Region4:thermal_scaled}
 Matching with region three (see~\eqref{E:Region3:X_to_Xc1}--\eqref{E:Region3:X_to_Xc2}) requires that the solution to~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} satisfies
 \begin{align}
 u &\sim \lambda^{1/3}Z_b'(X_c)^{-2/3}Q_c^{1/3} \chi^{1/3}, &  d &\sim \lambda^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}\chi^{-1/3}\label{E:Region4:far_field1},\\
-\p &\sim  \lambda Z_b'(X_c) \chi, & \t &\sim -\lambda^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}\chi^{-1/3}\label{E:Region4:far_field2}
+\p &\sim - \lambda Z_b'(X_c) \chi, & \t &\sim -\lambda^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}\chi^{-1/3}\label{E:Region4:far_field2}
 \end{align}
 as $\chi \to -\infty$. (Again, numerical solutions of~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} are obtained on a restricted domain $-\chi_0 < \chi < \chi_0$ where $|\chi_0| \ll \epsone^{3/4}$.)
 
@@ -663,10 +668,11 @@ We begin by noting that flux is again conserved,
 \begin{equation}\label{E:Region4:Constant_Flux}
 du  = Q_c.
 \end{equation}
-Inserting~\eqref{E:Region4:Constant_Flux} into~\eqref{E:Region4:thermal_scaled} and combining with~\eqref{E:Region4:buoyancy_scaled} gives a expression that can be directly integrated once alongside~\eqref{E:Region4:far_field2} to give
+Inserting~\eqref{E:Region4:Constant_Flux} into~\eqref{E:Region4:thermal_scaled} and combining with~\eqref{E:Region4:buoyancy_scaled} gives an expression that can be directly integrated once to give
 \begin{equation}\label{E:Region4:Linear_p_t}
-\frac{\p}{\lambda} + k_2 \t = -Z_b'(X_c)\chi.
+\frac{\p}{\lambda} + k_2 \t = -Z_b'(X_c)\chi + C.
 \end{equation}
+Here $C$ is a constant that would, in practice, be determined by analysing the lower order ($\order{1}$) contributions to $\Delta P$ as $X \to X_c$. However, this analysis is beyond the scope of this paper (we do not directly use the following in the construction of the approximation to the melt rate in \S\ref{S:MeltRate}).
 
 The relationships~\eqref{E:Region4:Constant_Flux} and~\eqref{E:Region4:Linear_p_t} allow us to reduce~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} to a system of two equations, which can be rescaled so that only a single parameter, $k_2 \lambda$, enters:
 \begin{align}
@@ -675,9 +681,9 @@ k_2 \lambda \dd{\tilde{\p}}{\tilde{\chi}} = -\tilde{u}\left[\tilde{p} + \tilde{\
 \end{align}
 where
 \begin{equation}\label{E:Region4:Rescaling}
-\tilde{\chi} = \frac{\lambda^{1/4}Z_b'(X_c)^{1/2}}{Q_c^{1/2}}\chi, ~\quad  \tilde{u} = \frac{1}{\lambda^{1/4}Z_b'(X_c)Q_c^{1/2}}u,\quad \tilde{\p}= \frac{1}{\lambda^{3/4}Z_b'(X_c)Q_c^{1/2}}\p.
+\tilde{\chi} = \frac{\lambda^{1/4}Z_b'(X_c)^{1/2}}{Q_c^{1/2}}\left(\chi - \frac{C}{\kappa Z_b'(X_c)}\right), ~\quad  \tilde{u} = \frac{1}{\lambda^{1/4}Z_b'(X_c)^{1/2}Q_c^{1/2}}u,\quad \tilde{\p}= \frac{1}{\lambda^{3/4}Z_b'(X_c)^{ 1/2}Q_c^{1/2}}\p.
 \end{equation} 
-In terms of these rescaled variables, the matching conditions conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} read
+In terms of these rescaled variables, the matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} read
 \begin{equation}\label{E:Region4:Rescaled_farfield}
 \tilde{\p} \sim -\tilde{\chi},~ \tilde{u}\sim (-\tilde{\chi})^{1/3}\quad \text{as}~\tilde{\chi}\to -\infty.
 \end{equation}
@@ -685,7 +691,7 @@ In terms of these rescaled variables, the matching conditions conditions~\eqref{
 
 \begin{figure}
 \centering
-\includegraphics[width = 0.95\textwidth]{./figures/fig5_transition_region_both.pdf}
+\includegraphics[width = 0.99\textwidth]{Submitted_PRSA/make_plots/plots/figure5.png}
 \caption{Numerical solutions of the stopping region equations (original model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} and~\eqref{E:Region4:Rescaling}) with $\epsone = 3\times 10^{-2}$ (i.e. as in table~\ref{T:Dimensionless_Parameters}, purple curves) and with $\epsone = 3\times 10^{-3}$ (green curves) which are shown in (a) $(\tilde{u}, \tilde{\p})$ space and (b) $(\tilde{\chi}, \tilde{\p})$ space. The black dashed curve indicates the numerical solution of~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:rescaled2}, the grey curve indicates the nullcline $\tilde{u}^3 = \tilde{\p}$, and the solid black indicates line $\tilde{p} = 0$ Each of the solutions here uses a linear draft, $Z_b(X) = X$, with $Q_c = 0.5, X_c = 0.5$ and $\lambda, k_i$ according to the values in table~\ref{T:Dimensionless_Parameters}. The matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} are applied at $\tilde{\chi}_0 = 10$ in both cases. }\label{fig:Region4}
 \end{figure}
 

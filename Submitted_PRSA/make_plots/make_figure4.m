@@ -6,8 +6,6 @@
 addpath('Auxillary_functions');
 figpref(4);
 %% Parameters
-nu = 0.88; %nu = kappa elsewhere
-
 run parameters %get dimensional parameters (brings them all into global scope)
 
 %compute dimensionless parameters

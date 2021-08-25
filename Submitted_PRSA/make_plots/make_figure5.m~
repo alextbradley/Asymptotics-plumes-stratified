@@ -18,7 +18,7 @@ eps4 = (S0 - S1)/2/S0;
 delta = lt/l0;
 Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
 Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau but makes little difference
-kappa = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+lambda = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
 
 %order 1 quantities relevant for the transition region
 k2      = eps2/eps1;
@@ -31,29 +31,29 @@ dzb_xc  = dzbF(Xc);
 zb_xc   = zbF(Xc);
 
 %variable scalings
-chi_scaling = kappa^(-1/4)*Qc^(1/2)*dzb_xc^(-1/2);
-u_scaling = kappa^(1/4)*(dzb_xc)^(1/2)*Qc^(1/2);
-p_scaling = kappa^(3/4)*(dzb_xc)^(1/2)*Qc^(1/2);
+chi_scaling = lambda^(-1/4)*Qc^(1/2)*dzb_xc^(-1/2);
+u_scaling = lambda^(1/4)*dzb_xc*Qc^(1/2);
+p_scaling = lambda^(3/4)*dzb_xc*Qc^(1/2);
 
 % Far field conditions
 chi_ff        = -10*chi_scaling; %choose matching point (|X_ff| >> 1, X_ff < 0) Note: length scale is eps1^(3/4) \approx 0.05, so in reality we probably only need 1 length scale (i.e. no need to ramp X_ff up too massively)
-U_ff        = (-chi_ff)^(1/3)*dzb_xc^(2/3)*Qc^(1/3)*kappa^(1/3) ;
-D_ff        = (-chi_ff)^(-1/3)*dzb_xc^(-2/3)*Qc^(2/3)*kappa^(-1/3);
-delta_P_ff  = -chi_ff*dzb_xc*kappa;
-delta_T_ff  = -(-chi_ff)^(1/3)*Qc^(2/3)*dzb_xc^(1/3) * kappa^(-1/3);
+U_ff        = (-chi_ff)^(1/3)*dzb_xc^(2/3)*Qc^(1/3)*lambda^(1/3) ;
+D_ff        = (-chi_ff)^(-1/3)*dzb_xc^(-2/3)*Qc^(2/3)*lambda^(-1/3);
+delta_P_ff  = -chi_ff*dzb_xc*lambda;
+delta_T_ff  = -(-chi_ff)^(1/3)*Qc^(2/3)*dzb_xc^(1/3) * lambda^(-1/3);
 Y0          = [D_ff,U_ff, delta_P_ff,delta_T_ff];
 
 
 %% Plot 1:
 figure(1); clf; 
-ax1 = subplot(1,2,1); hold on
+subplot(1,2,1); hold on
 colmap = parula(3); %colormap for full solutions
 %horizontal line where negatively buoyant
 plot([0,2.5], [0,0], 'k', 'linewidth', 1.5)
 
 %Full equations (regular parameters):
-M1   = @(chi,Y) mass1(chi,Y, k2);
-rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc);
+M1   = @(chi,Y) mass1(chi,Y, k2, eps1);
+rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, lambda, Pt,k3,zbF, dzbF,Xc);
 options = odeset('Mass',M1, 'RelTol', 1e-6,'AbsTol', 1e-6);
 [chi1, Y1]  = ode15s(rhs1,[chi_ff,abs(chi_ff)],Y0,options);
 U1 = Y1(:,2);
@@ -67,8 +67,8 @@ plot(U1/u_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',3)
 
 %repeat with small parameters scaled down:
 eps1 = eps1/10; eps4 = eps4/10;
-M1   = @(chi,Y) mass1(chi,Y, k2);
-rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc);
+M1   = @(chi,Y) mass1(chi,Y, k2, eps1);
+rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, lambda, Pt,k3,zbF, dzbF,Xc);
 options = odeset('Mass',M1, 'RelTol', 1e-6, 'AbsTol', 1e-6);
 [chi2, Y2]  = ode15s(rhs1,[chi_ff,abs(chi_ff)],Y0,options);
 U2 = Y2(:,2);
@@ -82,7 +82,7 @@ u_tilde_ff = (-chi_ff_reduced)^(1/3);
 p_tilde_ff = -chi_ff_reduced;
 Y0_tilde = [u_tilde_ff, p_tilde_ff];
  
-M2   = @(chi,Y) mass2(chi,Y, k2, kappa);
+M2   = @(chi,Y) mass2(chi,Y, k2, lambda);
 rhs2 = @(chi,Y) forcing2(chi,Y);
 options = odeset('Mass',M2, 'RelTol', 1e-6,'AbsTol', 1e-6);
 [chi_reduced, Y_reduced] = ode15s(rhs2,[chi_ff_reduced,abs(chi_ff_reduced)],Y0_tilde,options);
@@ -110,7 +110,7 @@ xlabel('$\tilde{u}$', 'interpreter','latex')
 % xlim([-10,5])
 % xticks([-10:5:5])
 
-ax2 = subplot(1,2,2); hold on
+subplot(1,2,2); hold on
 plot([-10,5], [0,0], 'k', 'linewidth', 1.5)
 plot(chi1/chi_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',3)
 plot(chi2/chi_scaling, delta_P2/p_scaling,'color',  colmap(2,:), 'linewidth',3)
@@ -120,15 +120,10 @@ xlabel('$\tilde{\chi}$', 'interpreter','latex')
 ylabel('$\tilde{p}$', 'interpreter','latex')
 ylim([-2,10])
 xlim([-10,5])
-xticks(-10:5:5)
-fig = gcf;fig.Position(3:4) = [900,325];
+xticks([-10:5:5])
 
-txta= text(ax1,-0.6,10, '(a)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
-txtb= text(ax2,-13.5,10, '(b)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
-
-% saveas(gcf,'plots/figure5.png')
 %% functions
-function M = mass1(chi,Y, k2)
+function M = mass1(chi,Y, k2, eps1)
 %return the mass matrix for the solution method 1 (solving full equations
 %with rescaled length and tanh == 1, sech == 0)
 D = Y(1); 
@@ -143,7 +138,7 @@ M = [U, D, 0, 0;
 
 end
 
-function f = forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc)
+function f = forcing1(chi,Y,eps1,eps4, lambda, Pt,k3,zbF, dzbF,Xc)
 %return the forcing for the solution method 1 (solving full equation
 %with rescaled length and tanh == 1, sech == 0)
 D = Y(1);
@@ -153,7 +148,7 @@ delta_T = Y(4);
 
 f = [eps1 * U * dzbF(Xc+eps1^(3/4)*chi) + eps1^(3/4) * k3 * U * delta_T;
     D*delta_P*dzbF(Xc+eps1^(3/4)*chi) - U^2;
-    U*delta_T*(kappa - eps4);
+    U*delta_T*(lambda - eps4);
     eps1^(1/4) * (1 - 2*Pt  - zbF(Xc+eps1^(3/4)*chi)) * dzbF(Xc+eps1^(3/4)*chi) *U + ...
         -U * delta_T - D*U*dzbF(Xc+eps1^(3/4)*chi)];
 
