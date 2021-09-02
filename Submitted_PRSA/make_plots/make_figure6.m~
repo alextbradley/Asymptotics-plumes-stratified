@@ -149,19 +149,6 @@ for i = 1:4
     yticks(-1500:500:0)
 end
 
-%% plot tidying
-figure(1); 
-fig = gcf;
-fig.Position(3:4) =  [1074 640];
-
-%a, b, c, d labels
-ax = gca;
-subplot(2,2,1);txta = text(-1.5, 0, '(a)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-subplot(2,2,2);txtb = text(-1.5, 0, '(b)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-subplot(2,2,3);txtc = text(-3, 0, '(c)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-subplot(2,2,4);txtd = text(-10 - 1.5 * 25/6, 0, '(d)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-
-
 %% add plots of the draft
 %plot draft
 w = 0.14; h = 0.14;
@@ -185,6 +172,10 @@ for i = 1:4
      xticks([]);
 end
 
-%% save 
-% saveas(gcf,'plots/figure6.png')
+
+%% final plot tidying
+figure(1); 
+fig = gcf;
+fig.Position(3:4) =  [1074 640];
+
 
