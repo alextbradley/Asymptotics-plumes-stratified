@@ -1,18 +1,20 @@
-%Produce figure 8 in the manuscript.
-%Solve equations in a flat bathymetry. Compare new parametrization with
+%Produce figure 7 in the manuscript.
+%Solve equations in a flat bathymetry with ambient stratification. Compare new parametrization with
 %lazeroms and numerical solutions for different positions of the
 %pycnocline.
+
 %% Preliminaries
-clear
-clc
-addpath('Auxillary_functions')
-
-%figpos  = [148 63 1228 735]; %first screen big
-%figpos = [-1129 131 1130 674]; %second screen (left)
-figpos = [160 1033 1228 735]; %second screen (above)
-
+addpath('Auxillary_functions');
+figpref(4);
+figure(1); clf;
+colmap = parula(6);
+w = 0.25; 
+h = 0.8;
+positions = [0.07, 0.1, w, h;
+             0.4, 0.1, w, h;
+             0.73, 0.1, w, h]; %subplot positions on page
 %% Parameters
-run Parameters/typical_parameters %get dimensional parameters (be careful with global variable names)
+run parameters %get dimensional parameters 
 zgl = -3000; %make artificially deeper so that transition to 0 appears
 T0  = -1;
 T1  = -3;
@@ -59,13 +61,13 @@ xb = linspace(0,Xmax,1000); %bathymetry grid points
 zb = zbF(xb);    %ice draft at grid points
 %% Loop over positions of pycnocline
 figure(1); clf;
-subplot(1,3,1); hold on
+subplot('Position', positions(1,:)); hold on
 
 %add grey line indicating melt/freezing line
 plot([0,0], [zgl,0], 'color', 169/255 *ones(1,3),  'HandleVisibility', 'off');
 
 %add lazeroms/integral expression first (doesn't know anything about the pycnocline)
-X_lz = linspace(0, Xmax*1.5);
+X_lz = linspace(0, Xmax*1.5);  %nb sol goes complex when above X = 1 (ignore)
 Q_lz = zeros(1,length(X_lz));
 U_lz = zeros(1,length(X_lz));  %initialize
 
@@ -106,9 +108,10 @@ yticks(-3000:1000:0)
 
 xlim([-10,10])
 ax = gca; ax.FontSize = 16;
-
+ytickangle(90)
+txta = text(-15, 0, '(a)', 'Interpreter', 'latex', 'FontSize', 16);
 %% Repeat for the more conventional parameters
-run Parameters/typical_parameters %get dimensional parameters (be careful with global variable names)
+run parameters %get dimensional parameters (be careful with global variable names)
 
 %variable scales:
 U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
@@ -125,7 +128,7 @@ delta_T_scaleLz   = E0 *alpha * tauLz/St;
 X_scaleLz = tauLz/lambda3/alpha;
 
 %add grey line indicating melt/freezing line
-subplot(1,3,2);  hold on
+subplot('Position', positions(2,:)); hold on
 plot([0,0], [zgl, 0], 'color', 169/255 *ones(1,3));
 
 %dimensionless parameters
@@ -178,10 +181,11 @@ box on
 ylim([zgl,0])
 xlim([-5,12])
 ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txtb = text(-9.5, 0, '(b)', 'Interpreter', 'latex', 'FontSize', 16);
 
 %% Repeat with strong stratification: force the plume to terminate
-
-run Parameters/typical_parameters
+run parameters
 S1 = 33.0;
 
 %variable scales:
@@ -199,7 +203,7 @@ delta_T_scaleLz   = E0 *alpha * tauLz/St;
 X_scaleLz = tauLz/lambda3/alpha;
 
 %add grey line indicating melt/freezing line
-subplot(1,3,3); hold on
+subplot('Position', positions(3,:)); hold on
 plot([0,0], [zgl, 0], 'color', 169/255 *ones(1,3));
 
 %dimensionless parameters
@@ -252,5 +256,8 @@ ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
 box on
 ylim([zgl,0])
 xlim([-2, 12])
-fig = gcf; fig.Position(3:4) = [1276, 482];
+fig = gcf; fig.Position(3:4) = [880, 482];
 ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txtc = text(-5.6, 0, '(c)', 'Interpreter', 'latex', 'FontSize', 16);
+% saveas(gcf,'plots/figure7.png')

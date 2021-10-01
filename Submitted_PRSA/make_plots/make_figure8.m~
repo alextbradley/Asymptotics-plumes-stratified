@@ -152,22 +152,33 @@ for i = [1,4,2,3]
             Z0/l0, Pt, Pb, delta, kappa);
         
         %make plots
-        subplot(2,4,pltcnt); hold on
-        plot([0, 0], [0, max(Z)] + zgl,'--', 'color', [1,1,1]*169/255, 'HandleVisibility', 'off'); %zero melting
-        plot(Melt_rate, Z + zgl, 'color', colmap(1,:), 'linewidth', 3);
-        plot(M_Lzrms_adhoc, Zlz + zgl, 'color', colmap(3,:), 'linewidth', 3);
-        plot(M_AB * M0 * U_scale * delta_T_scale *secs_per_yr, X_AB*X_scale*alpha + zgl, 'color', colmap(4,:),'linewidth', 3)
+       
         if count == 1 %only add axis labels on mod 2 plots
+            subplot(2,4,pltcnt); hold on
+            plot([0, 0], [0, max(Z)] + zgl,'--', 'color', [1,1,1]*169/255);
+            plot(Melt_rate, Z + zgl, 'color', colmap(1,:), 'linewidth', 3);
+            plot(M_Lzrms_adhoc, Zlz + zgl, 'color', colmap(3,:), 'linewidth', 3);
+            plot(M_AB * M0 * U_scale * delta_T_scale *secs_per_yr, X_AB*X_scale*alpha + zgl, 'color', colmap(4,:),'linewidth', 3)
+            box on
+            ylim([zgl, 0])
+            pltcnt = pltcnt + 1;
+            xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
             ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
+            ax = gca; ax.FontSize = 16;
+        else
+            subplot(2,4,pltcnt); hold on
+            plot([0, 0], [0, max(Z)] + zgl,'--', 'color', [1,1,1]*169/255);
+            plot(Melt_rate, Z + zgl, 'color', colmap(1,:), 'linewidth', 3);
+            plot(M_Lzrms_adhoc, Zlz + zgl, 'color', colmap(3,:), 'linewidth', 3);
+            plot(M_AB * M0 * U_scale * delta_T_scale *secs_per_yr, X_AB*X_scale*alpha + zgl, 'color', colmap(4,:),'linewidth', 3)
+            box on
+            ylim([zgl, 0])
+            xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
+            ax = gca; ax.FontSize = 16;
+            pltcnt = pltcnt + 1;
         end
-        xlabel('melt rate (m/yr)', 'interpreter', 'latex', 'FontSize', 16);
-        ax = gca; ax.FontSize = 16;
-        box on
-        ylim([zgl, 0])
-        ax = gca; ax.FontSize = 16; xlims = ax.XLim;
-        %plot(ax.XLim, [Z0,Z0] + zgl,'--', 'color', 'k','linewidth', 1.5, 'HandleVisibility', 'off'); %pycnocline depth
-        ax.XLim = xlims;
-        pltcnt = pltcnt + 1;
+        
+       
         count = count + 1;
     end
 
@@ -176,23 +187,20 @@ end
 fig = gcf; 
 fig.Position(3:4) = [1200 750];
 subplot(2,4,1); txta = text(-3.5, 0, '(a)','interpreter', 'latex', 'fontsize', 16);
-legend({'Numerics', 'L19AH',  'B21'}, 'interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,3); txtb = text(-18, 0, '(b)','interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,5); txtc = text(-11.8, 0, '(c)','interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,7); txtd = text(-18, 0, '(d)','interpreter', 'latex', 'fontsize', 16);
 
-% inset schematic
+% inset
 ax = axes;
-ax.Position = [0.82, 0.6,0.08, 0.08];
+ax.Position = [0.82, 0.6,0.08, 0.1];
 ax.XTick = [];
 ax.YTick = [];
-fill([Xb(4,:), flip(Xb(4,:))], [zeros(size(Xb(4,:))), flip(Zb(4,:))], 'b')
+idx = ((Xb(i,:) > min(sol.x)) + (Xb(i,:) < max(sol.x)))>1;
+X = Xb(i,idx);
+Zb =  Xb - quadterm* Xb.^2 + cubicterm*(4*Xb).^3;
+fill([Xb, flip(Xb)], [zeros(size(Xb)), flip(Zb)], 'b')
 ylim([0, abs(zgl)])
 xlim([0, abs(zgl)/alpha])
 xticks([]);
 yticks([]);
-hold on
-plot(ax.XLim,ax.YLim, 'k--');
-
-% save?
-%saveas(gcf,'plots/figure8.png')

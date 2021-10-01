@@ -28,7 +28,7 @@ function [MM,XX] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, Z0, Pt, Pb, d
 %           delta = lt/l0, ratio of thermocline lengthscale and lengthscale
 %           of buoyancy deficit
 %
-% lambda:   Scalar
+% lambda:   Scalar (= kappa in the ms)
 
 %% Find pycnocline position in terms of X
 XX = linspace(0,1,1e3); 
@@ -79,18 +79,32 @@ delta_T_thermocline = delta_T_in + (X_thermocline - X_in)*(delta_T_out - delta_T
 
 %% Above thermocline
 % Construct quantities arising from linearization
-lambda1 = (1 - zbF(X_out))*Q_out - U_out^3 / lambda / dzbF(X_out);
-lambda2 = 0;
-K1      = lambda^(1/3) * (lambda2 + dzbF(X_out)^4*((1-zbF(X_out))*Q_out - lambda1))^(1/3);
-K2      = lambda*(4*dzbF(X_out)^3 * d2zbF(X_out)*((1 - zbF(X_out))*Q_out - lambda1) + ...
-    dzbF(X_out)^4*((1 - zbF(X_out) - 2*Pt)*K1 - dzbF(X_out)*Q_out))/3/K1^2;
-K3hat   = dzbF(X_out)^4 * ((1 - zbF(X_out) - 2*Pt)*K2/2 - dzbF(X_out)*K1 - Q_out*d2zbF(X_out)/2) + ...
-    4*d2zbF(X_out)*dzbF(X_out)^3 * ((1-zbF(X_out)- 2*Pt)*K1 - dzbF(X_out)*Q_out) +...
-    (2 * dzbF(X_out)*d3zbF(X_out) + 6*dzbF(X_out)^2*d2zbF(X_out)^2)*((1 - zbF(X_out))*Q_out - lambda1);
-K3      = (lambda*K3hat - 3*K1*K2^2)/3/K1^2;
-    
+f = 0.7;
+
+%lambda1 = (1 - zbF(X_out))*Q_out - U_out^3 / lambda / dzbF(X_out);
+%lambda2 = 0;
+%K1      = lambda^(1/3) * (lambda2 + dzbF(X_out)^4*((1-zbF(X_out))*Q_out - lambda1))^(1/3);
+%K2      = lambda*(4*dzbF(X_out)^3 * d2zbF(X_out)*((1 - zbF(X_out))*Q_out - lambda1) + ...
+%    dzbF(X_out)^4*((1 - zbF(X_out) - 2*Pt)*K1 - dzbF(X_out)*Q_out))/3/K1^2;
+%K3hat   = dzbF(X_out)^4 * ((1 - zbF(X_out) - 2*Pt)*K2/2 - dzbF(X_out)*K1 - Q_out*d2zbF(X_out)/2) + ...
+%    4*d2zbF(X_out)*dzbF(X_out)^3 * ((1-zbF(X_out)- 2*Pt)*K1 - dzbF(X_out)*Q_out) +...
+%    (2 * dzbF(X_out)*d3zbF(X_out) + 6*dzbF(X_out)^2*d2zbF(X_out)^2)*((1 - zbF(X_out))*Q_out - lambda1);
+%K3      = (lambda*K3hat - 3*K1*K2^2)/3/K1^2;
+%[K3, K2, K1 - U_out/2 *dzbF(X0)]
+%r = roots([K3, K2, K1 - U_out*f *dzbF(X0)]);
+%r = r(r>0);
+
+
+K1 = dzbF(X_out) * U_out;
+K2 = (4 * dzbF(X_out)^2 * d2zbF(X_out) * U_out^3 + lambda * dzbF(X_out)^4 *( (1 - zbF(X_out) - 2*Pt)*K1 -dzbF(X_out)*Q_out))/6/K1^2;
+K3hat = lambda*dzbF(X_out)^4 * ((1- zbF(X_out) - 2*Pt)*K2 - d2zbF(X_out)*Q_out / 2 - K1 * dzbF(X_out)) + ...
+        4 * lambda * dzbF(X_out)^3 * d2zbF(X_out) * ((1 - zbF(X_out) - 2*Pt)*K1 - dzbF(X_out)*Q_out) + ...
+        2 * U_out^3 *( dzbF(X_out)^2 * d3zbF(X_out) + 3*dzbF(X_out)*d2zbF(X_out)^2);
+K3 = (K3hat - 3*K1 *K2)/9/K1^2;
+
+
 %solve the polynomial for xstar
-r = roots([K3, K2, K1 - U_out/2 *dzbF(X0)]);
+r = roots([3*K3, 2*K2, K1 - U_out*f *dzbF(X0)]);
 r = r(r>0);
 if any(abs(imag(r)) <1e-10)
     r = max(r);
@@ -98,7 +112,7 @@ if any(abs(imag(r)) <1e-10)
 else %take the smallest value U acheives at x_star
     xstar = 10; %take to be large
 end
-
+%pause
 
 % Compile terms in expansion
 vareps  = xstar - X0; %parameter initicating how far beyong x_out we can go
@@ -106,12 +120,12 @@ X_upper_inner = linspace(0,1, 1e3); %scaled variable for upper
 X_upper = X_out + vareps*X_upper_inner; %we'll chop this down later, when the  appropriate x_star (where u = 1/2 u_out occurs) has been determined
 
 Q_upper_first_term = K1*X_upper_inner;
-Q_upper_second_term = K2*X_upper_inner.^2 / 2;
-Q_upper_third_term = K3*X_upper_inner.^3 / 3;
+Q_upper_second_term = K2*X_upper_inner.^2 ;
+Q_upper_third_term = K3*X_upper_inner.^3;
 Q_upper = Q_out + vareps*Q_upper_first_term +...
     vareps^2 * Q_upper_second_term + vareps^3 * Q_upper_third_term;
 
-U_upper         = (K1 + vareps*K2*X_upper_inner + vareps^2 * K3 * X_upper_inner.^2)./dzbF(X_upper); %note lower case x_upper in denominator
+U_upper         = (K1 + vareps*2*K2*X_upper_inner + vareps^2 * 3*K3 * X_upper_inner.^2)./dzbF(X_upper); %note lower case x_upper in denominator
 D_upper         = Q_upper./U_upper;
 delta_rho_upper = U_upper.^2 ./ D_upper ./dzbF(X_upper);
 delta_T_upper  = (1 - 2*Pt - zbF(X_upper)).*dzbF(X_upper)...
@@ -154,12 +168,12 @@ if xc < x_star
     X_upper = X_out + vareps*X_upper_inner; %we'll chop this down later, when the  appropriate x_star (where u = 1/2 u_out occurs) has been determined
     
     Q_upper_first_term = K1*X_upper_inner;
-    Q_upper_second_term = K2*X_upper_inner.^2 / 2;
-    Q_upper_third_term = K3*X_upper_inner.^3 / 3;
+    Q_upper_second_term = K2*X_upper_inner.^2;
+    Q_upper_third_term = K3*X_upper_inner.^3;
     Q_upper = Q_out + vareps*Q_upper_first_term +...
         vareps^2 * Q_upper_second_term + vareps^3 * Q_upper_third_term;
     
-    U_upper         = (K1 + vareps*K2*X_upper_inner + vareps^2 * K3 * X_upper_inner.^2)./dzbF(X_upper); %note lower case x_upper in denominator
+    U_upper         = (K1 + vareps*2*K2*X_upper_inner + vareps^2 * 3*K3 * X_upper_inner.^2)./dzbF(X_upper); %note lower case x_upper in denominator
     D_upper         = Q_upper./U_upper;
     delta_rho_upper = U_upper.^2 ./ D_upper ./dzbF(X_upper);
     delta_T_upper  = (1 - 2*Pt - zbF(X_upper)).*dzbF(X_upper)...
