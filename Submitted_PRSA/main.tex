@@ -73,17 +73,17 @@
 \title{Asymptotic Analysis of Subglacial Plumes in Stratified Environments}
 
 \author{%%%% Author details
-Alexander T Bradley$^{1}$, C. Rosie Williams$^{1}$, Adrian Jenkins$^{2}$ and Robert Arthern$^{1}$}
+Alexander T. Bradley$^{1}$, C. Rosie Williams$^{1}$, Adrian Jenkins$^{2}$ and Robert Arthern$^{1}$}
 
 %%%%%%%%% Insert author address here
-\address{$^{1}$British Antarctic Survey, High Cross, Madingley Road, Cambridge CB3 0ET, UK\\
+\address{$^{1}$British Antarctic Survey, Cambridge, UK\\
 $^{2}$Department of Geography and Environmental Sciences, Northumbria University, Newcastle upon Tyne, UK.}
 
 %%%% Subject entries to be placed here %%%%
-\subject{xxxxx, xxxxx, xxxx}
+\subject{Oceanography, Glaciology, Mathematical Modelling}
 
 %%%% Keyword entries to be placed here %%%%
-\keywords{xxxx, xxxx, xxxx}
+\keywords{Plumes, Antarctica, Ice-shelves, Ice-sheets, Melting}
 
 %%%% Insert corresponding author and its email address}
 \corres{Alexander T Bradley\\
@@ -102,36 +102,36 @@ Accurate predictions of basal melt rates on ice shelves are necessary for precis
 \end{fmtext}
 \maketitle
 \section{Introduction}\label{S:Introduction}
-The Antarctic ice sheet has undergone significant change in recent years, characterized by pronounced thinning, mass loss and acceleration~\cite{Pritchard2012Nature, Mouginot2014GRL, Paolo2015Science, Rignot2019PNAS}. An increase in basal melting on ice shelves -- the floating, tongue-like extensions of the grounded ice -- has been implicated in these changes~\cite{Shepherd2004GRL, Jenkins2010NatureGeo, Hellmer2012Nature}; increased basal melting reduces the resistive effect that ice shelves apply to the grounded ice upstream~\citep{Gagliardini2010GRL, Goldberg2019GRL} (commonly referred to as `buttressing') leading to an increase ice flux from the grounded to floating regions of the ice sheet~\citep{Gudmundsson2013Cryo}. Reductions in buttressing are thought to increase the possibility of ice sheet instabilities~\citep{Schoof2007JGeophysResEarth,Vaughan2007Science}; changes in ice shelf buttressing and ice sheet instabilities are leading order controls on future projections of the Antarctic ice sheet and the associated sea level rise contributions~\citep{DeConto2016Nature, Arthern2017GRL}. Accurate descriptions of the basal melt rate that results from ice-ocean interaction are therefore necessary to constrain predictions of sea level rise. 
+The Antarctic ice sheet has undergone significant change in recent years, characterized by pronounced thinning, mass loss and acceleration~\cite{Pritchard2012Nature, Mouginot2014GRL, Paolo2015Science, Rignot2019PNAS}. An increase in basal melting on ice shelves -- the floating, tongue-like extensions of the grounded ice -- has been implicated in these changes~\cite{Shepherd2004GRL}; increased basal melting reduces the resistive effect that ice shelves apply to the grounded ice upstream~\citep{Gagliardini2010GRL} (commonly referred to as `buttressing') leading to an increase ice flux from the grounded to floating regions of the ice sheet~\citep{Gudmundsson2013Cryo}. Reductions in buttressing are thought to increase the possibility of ice sheet instabilities~\citep{Schoof2007JGeophysResEarth}; changes in ice shelf buttressing and ice sheet instabilities are leading order controls on future projections of the Antarctic ice sheet and the associated sea level rise contributions~\citep{DeConto2016Nature, Arthern2017GRL}. Accurate descriptions of the basal melt rate that results from ice-ocean interaction are therefore necessary to constrain predictions of sea level rise. 
 
 Basal melting on ice shelves is often characterized by three main modes, whose relative importance depends on myriad factors including the geometry of the ice shelf cavity, the presence of circumpolar deep water on the continental shelf, and oceanic tides~\citep{Jacobs1992JGlac}. So-called `mode one' melting is driven by inflows of cold, dense shelf water which is produced by sea ice formation, and results in the formation of buoyant plumes of meltwater; `mode two' melting is driven by warm circumpolar deep water that spills over the continental shelf; and `mode three' is driven by surface waters~\citep{Silvano2016Oceanography}. Mode one melting makes up the dominant contribution to melting in Antarctica~\citep{Adusumilli2020NatureGeo}.
 
-Ocean general circulation models aim to account for each of these modes of melting by explicitly resolving the circulation within the cavity. Such models require high resolution in both the horizontal and vertical directions if they are to accurately resolve important processes such as mesoscale eddies~\citep{Stewart2015GRL}, flow-topography interactions~\citep{Nakayama2014OceanModelling}, shelf-break jets~\citep{Graham2016JGeophysResOceans} and, crucially, the turbulent entrainment inside a boundary layer next to the ice~\citep{Kimura2014JPhysOcean, Xu2012AnnGlac}. As a result, they are computationally expensive, especially when coupled to a dynamic ice sheet model whose geometry evolves over time; fully-coupled simulations of ice-ocean interactions are, to date, limited in their spatial extent to single ice shelf cavities~\citep[e.g.][]{DeRydt2016JGeophysResEarthSurf, Seroussi2017GRL} or in their temporal extent if multiple cavities are included~\citep[e.g.][]{Mathiot2017GeosciModDev,Naughten2018JClim}.
+Ocean general circulation models aim to account for each of these modes of melting by explicitly resolving the circulation within the cavity. Such models require high resolution in both the horizontal and vertical directions if they are to accurately resolve important physical processes, such as the turbulent entrainment inside a boundary layer next to the ice~\citep[e.g.][]{Kimura2014JPhysOcean}. As a result, they are computationally expensive, especially when coupled to a dynamic ice sheet model whose geometry evolves over time; fully-coupled simulations of ice-ocean interactions are, to date, limited in their spatial extent to single ice shelf cavities~\citep[e.g.][]{DeRydt2016JGeophysResEarthSurf, Seroussi2017GRL} or in their temporal extent if multiple cavities are included~\citep[e.g.][]{Naughten2018JClim}.
 
-An alternative approach is therefore required for multi-century simulations of ice sheets. To date, all simulations of the Antarctic ice sheets on this timescale have applied an analytic approximation (a parametrization) to the basal melt rate. Many different parametrizations have been proposed, but each typically falls into one (or more) of the following four categories: constant melt rates applied everywhere~\citep[e.g.][]{Arthern2017GRL}; parametrizations including simple ice draft depth dependence~\citep[e.g.][]{Joughin2014Science}; parametrizations based on a local balance of heat at the ice ocean interface~\citep[e.g][]{Golledge2015Nature}; and parametrizations including with a linear~\citep[e.g.][]{Favier2016Cryo} or quadratic dependence~\citep[e.g.][]{Holland2008JClimate,DeConto2016Nature} on ocean temperature.
+An alternative approach is therefore required for multi-century simulations of ice sheets. To date, all simulations of the Antarctic ice sheets on this timescale have applied an analytic approximation (a parametrization) to the basal melt rate. Many different parametrizations have been proposed, but each typically falls into one (or more) of the following categories: parametrizations including simple ice draft depth dependence~\citep[e.g.][]{Joughin2014Science}; parametrizations based on a local balance of heat at the ice ocean interface~\citep[e.g][]{Golledge2015Nature}; and parametrizations including with a linear~\citep[e.g.][]{Favier2016Cryo} or quadratic dependence~\citep[e.g.][]{Holland2008JClimate,DeConto2016Nature} on ocean temperature.
 
-In recent years, however, two novel melt rate parametrizations have emerged, which do not fall into these categories. The first from~\cite{Reese2018Cryo} is based on a one-dimensional ocean-box model that coarsely resolves ice shelf cavities. The second is a `plume emulator' from~\cite{Lazeroms2018TheCryo}, which is based on the theory of subglacial plumes. Both of these conceptualize the circulation in the whole cavity, a feature that is lacking in the simpler parametrizations mentioned above. In this paper, we focus on the plume emulator parametrization, which produces melt patterns that are qualitatively similar to observations when applied to Antarctic ice shelves~\citep{Lazeroms2018TheCryo} and performs reasonably well when compared to a fully coupled ice-ocean model~\citep{Favier2019GeosciModDev}.
+In recent years, however, two novel melt rate parametrizations have emerged, which do not fall into these categories. The first from~\citet{Reese2018Cryo} is based on a one-dimensional ocean-box model that coarsely resolves ice shelf cavities. The second is a `plume emulator' from~\citet{Lazeroms2018TheCryo}, which is based on the theory of subglacial plumes. Both of these conceptualize the circulation in the whole cavity, a feature that is lacking in the simpler parametrizations mentioned above. In this paper, we focus on the plume emulator parametrization, which produces melt patterns that are qualitatively similar to observations when applied to Antarctic ice shelves~\citep{Lazeroms2018TheCryo} and performs reasonably well when compared to a fully coupled ice-ocean model~\citep{Favier2019GeosciModDev}.
 
-The theory of subglacial plumes was pioneered by~\citet{MacAyeal1985} and~\citet{Jenkins1991JGeophysResOceans}, studies which themselves build upon the classical theories of plumes and gravity currents~\citep{Ellison1959JFM, Morton1956PRSL, Turner1979}. Subglacial plumes are buoyancy driven flows that form when freshwater enters the ocean adjacent to an ice shelf, by either melting or direct discharge at the grounding line; the freshwater is buoyant, resulting in a turbulent flow that moves upwards along the ice shelf base. The turbulent motion within the plume results in entrainment of relatively warm and salty ambient water; on the one hand, the associated increase in temperature of the plume promotes enhanced melting of the ice shelf base, further freshening the plume and increasing its buoyancy relative to the ambient ocean (ocean temperatures in Antarctica are typically within a few degrees of the local freezing point, so density variations are controlled primarily by salinity~\citep{Hewitt2020AnnRevFlu}). On the other hand, entrainment of ambient water results in an increase in the plume's salinity, thus reducing its buoyancy, and ultimately retarding its motion up the ice shelf base. This interplay between melting, ambient entrainment, and subglacial discharge leads to complex dynamics, which are further influenced by the variation of the pressure-dependent freezing temperature with depth. 
+The theory of subglacial plumes was pioneered by~\citet{MacAyeal1985} and~\citet{Jenkins1991JGeophysResOceans}, studies which themselves build upon the classical theories of plumes and gravity currents~\citep[e.g.][]{Ellison1959JFM, Morton1956PRSL}. Subglacial plumes are buoyancy driven flows that form when freshwater enters the ocean adjacent to an ice shelf, by either melting or direct discharge at the grounding line; the freshwater is buoyant, resulting in a turbulent flow that moves upwards along the ice shelf base. The turbulent motion within the plume results in entrainment of relatively warm and salty ambient water; on the one hand, the associated increase in temperature of the plume promotes enhanced melting of the ice shelf base, further freshening the plume and increasing its buoyancy relative to the ambient ocean (ocean temperatures in Antarctica are typically within a few degrees of the local freezing point, so density variations are controlled primarily by salinity~\citep{Hewitt2020AnnRevFlu}). On the other hand, entrainment of ambient water results in an increase in the plume's salinity, thus reducing its buoyancy, and ultimately retarding its motion up the ice shelf base. This interplay between melting, ambient entrainment, and subglacial discharge leads to complex dynamics, which are further influenced by the variation of the pressure-dependent freezing temperature with depth. 
 
-There are four important length scales involved in the dynamics of subglacial plumes. The first is related to stratification of the ambient ocean. Subglacial plumes entrain relatively salty (and thus dense) ambient water at depth. This water  is carried upwards to regions of lower ambient density, where it may ultimately become negatively buoyant; the depth at which this transition to negative buoyancy occurs prescribes a length scale associated with ambient stratification~\citep{Magorrian2016JGeoResOcean}. The second length scale is related to the variation of the freezing temperature with depth: as the plume rises, as does the in situ freezing point; the plume may become super-cooled, leading to refreezing of ice onto the shelf base (the so-called ice pump described by~\cite{Lewis1986JGeophysResOceans}). The distance over which the thermal driving (the difference between the plume temperature and the in situ freezing point) at the grounding line decays to zero as a result of this depth dependence on temperature gives the associated length scale~\citep{LaneSerff1995JGeophysResOceans}. The third length scale is associated with subglacial discharge. Far from the grounding line, mass inputs to the plume are dominated by ambient entrainment, but close to the grounding line, subglacial discharge remains important; the cross-over between these two regimes defines the length scale associated with subglacial discharge, which depends sensitively on the freshwater flux at the grounding line~\citep{Jenkins2011JPhysOcean}; ice shelves in Antarctica typically have a relatively small subglacial discharge, so the associated length scale is small in comparison with the length of the ice shelf and the effect of subglacial discharge on plume dynamics can be neglected. The final length scale is the plume thickness at which rotation (Coriolis forces) begin to dominate the dynamics. In practice, this is when the plume thickness exceeds the Ekman length~\citep{Jenkins2011JPhysOcean}. As the plume thickness approaches the Ekman length, the concept of entrainment becomes increasing poorly defined and simple plume theory becomes invalid.  Well-mixed conditions are likely to be maintained only within the Ekman layer, beyond which there will be a gradual transition to ambient properties through a broad pycnocline (Jenkins, in press).  In a stratified ambient, the distinction between ambient and plume will become unclear, and lower parts of the pycnocline will progressively detrain into the ambient.
+There are four important length scales involved in the dynamics of subglacial plumes. The first is related to stratification of the ambient ocean. Subglacial plumes entrain relatively salty (and thus dense) ambient water at depth. This water  is carried upwards to regions of lower ambient density, where it may ultimately become negatively buoyant; the depth at which this transition to negative buoyancy occurs prescribes a length scale associated with ambient stratification~\citep{Magorrian2016JGeoResOcean}. The second length scale is related to the variation of the freezing temperature with depth: as the plume rises, as does the in situ freezing point; the plume may become super-cooled, leading to refreezing of ice onto the shelf base (the so-called ice pump described by~\citet{Lewis1986JGeophysResOceans}). The distance over which the thermal driving (the difference between the plume temperature and the in situ freezing point) at the grounding line decays to zero as a result of this depth dependence on temperature gives the associated length scale~\citep{LaneSerff1995JGeophysResOceans}. The third length scale is associated with subglacial discharge. Far from the grounding line, mass inputs to the plume are dominated by ambient entrainment, but close to the grounding line, subglacial discharge remains important; the cross-over between these two regimes defines the length scale associated with subglacial discharge, which depends sensitively on the freshwater flux at the grounding line~\citep{Jenkins2011JPhysOcean}; ice shelves in Antarctica typically have a relatively small subglacial discharge, so the associated length scale is small in comparison with the length of the ice shelf and the effect of subglacial discharge on plume dynamics can be neglected. The final length scale is the plume thickness at which rotation (Coriolis forces) begin to dominate the dynamics. In practice, this is when the plume thickness exceeds the Ekman length~\citep{Jenkins2011JPhysOcean}. As the plume thickness approaches the Ekman length, the concept of entrainment becomes increasing poorly defined and simple plume theory becomes invalid.  Well-mixed conditions are likely to be maintained only within the Ekman layer, beyond which there will be a gradual transition to ambient properties through a broad pycnocline~\cite{Jenkins2021JPO}.  In a stratified ambient ocean, the distinction between ambient and plume will become unclear, and lower parts of the pycnocline will progressively detrain into the ambient.
 
-The plume emulator parametrization of~\cite{Lazeroms2018TheCryo} is based on an approximation to the melt rate that emerges from the system of equations describing subglacial plumes in one spatial dimension, that is then extended to two spatial dimensions. Originally, this approximation was based on a polynomial fit to data that was obtained by numerically solving this system of equations~\citep{Jenkins2014scaling}, but an analytic expression was subsequently derived by~\cite{Lazeroms2019JPhysOcean}, via an asymptotic analysis of the system in the limit of weak thermal driving and shallow slopes of the ice shelf base. This system of equations are appropriate only for ice shelves with a constant basal slope, and whose adjacent ocean has a constant temperature and salinity; in practice the ice shelf basal slope displays significant heterogeneity and the ambient ocean is highly stratified. The aim of this paper is to construct an approximation to the melt rate that emerges from the equations describing a one-dimensional plume model which includes a typical ambient stratification and a non-constant ice shelf basal slope, with a view to ultimately improving upon the~\cite{Lazeroms2018TheCryo} melt rate parametrization by accounting for more realistic conditions.
+The plume emulator parametrization of~\citet{Lazeroms2018TheCryo} is based on an approximation to the melt rate that emerges from the system of equations describing subglacial plumes in one spatial dimension, that is then extended to two spatial dimensions. Originally, this approximation was based on a polynomial fit to data that was obtained by numerically solving this system of equations~\citep{Jenkins2014scaling}, but an analytic expression was subsequently derived by~\citet{Lazeroms2019JPhysOcean}, via an asymptotic analysis of the system in the limit of weak thermal driving and shallow slopes of the ice shelf base. This system of equations are appropriate only for ice shelves with a constant basal slope, and whose adjacent ocean has a constant temperature and salinity; in practice the ice shelf basal slope displays significant heterogeneity and the ambient ocean is highly stratified. The aim of this paper is to construct an approximation to the melt rate that emerges from the equations describing a one-dimensional plume model which includes a typical ambient stratification and a non-constant ice shelf basal slope, with a view to ultimately improving upon the~\citet{Lazeroms2018TheCryo} melt rate parametrization by accounting for more realistic conditions.
 
 The ambient stratification we consider here is based on typical conditions observed in the Amundsen Sea sector of Antarctica~\cite{Jenkins2018NatureGeo}. It consists of two fairly uniform layers separated by a pycnocline -- a relatively thin layer in which gradients in both temperature and salinity are strong. Below the pycnocline, the ambient ocean is warm and salty, deriving from modified circumpolar deep water, which spills over the continental shelf break. Above the pycnocline, the ambient ocean is cold and fresh, deriving from Winter Water which forms from cooling, brine drainage and convection beneath growing sea ice.
 
-This paper is structured as follows: in \S\ref{S:Model}, we provide a brief outline of the mathematical model of subglacial plumes of~\cite{Jenkins1991JGeophysResOceans} and~\cite{Jenkins2011JPhysOcean}, in which ambient stratification and non-constant ice shelf basal slopes are included explicitly. This model is non-dimensionalized using scales that emerge from a similarity solution that is valid close to the grounding line. We then present example solutions of the equations governing this dimensionless model, which provide insight into the behaviour; in doing so, we informally introduce the different regions of the solution referred to in the asymptotic analysis that follows in \S\ref{S:Asymptotics}. This asymptotic analysis exploits the small size of several of the dimensionless parameters identified in the non-dimensionalization, including the aspect ratio of the ice shelf base, the weak thermal driving, and the relative slenderness of the pycnocline. The behaviour is different in each of the four regions, which emerge naturally from the analysis, and we analyze each of these regions in turn. Following this, in \S\ref{S:MeltRate}, we present details of our approximation to the melt rate, which draws on the asymptotic analysis presented in \S\ref{S:Asymptotics}. In \S\ref{S:Numerics}, we assess the performance of this approximation by comparing it with both numerical solutions of the model equations and the corresponding~\cite{Lazeroms2019JPhysOcean} approximation. Finally, in \S\ref{S:Discussion}, we summarize our results and provide concluding remarks. 
+This paper is structured as follows: in \S\ref{S:Model}, we provide a brief outline of the mathematical model of subglacial plumes of~\cite{Jenkins1991JGeophysResOceans} and~\cite{Jenkins2011JPhysOcean}, in which ambient stratification and non-constant ice shelf basal slopes are included explicitly. This model is non-dimensionalized using scales that emerge from a similarity solution that is valid close to the grounding line. We then present example solutions of the equations governing this dimensionless model, which provide insight into the behaviour; in doing so, we informally introduce the different regions of the solution referred to in the asymptotic analysis that follows in \S\ref{S:Asymptotics}. This asymptotic analysis exploits the small size of several of the dimensionless parameters identified in the non-dimensionalization, including the aspect ratio of the ice shelf base, the weak thermal driving, and the relative slenderness of the pycnocline. The behaviour is different in each of the four regions, which emerge naturally from the analysis, and we analyze each of these regions in turn. Following this, in \S\ref{S:MeltRate}, we present details of our approximation to the melt rate, which draws on the asymptotic analysis presented in \S\ref{S:Asymptotics}. In \S\ref{S:Numerics}, we assess the performance of this approximation by comparing it with both numerical solutions of the model equations and the corresponding~\citet{Lazeroms2019JPhysOcean} approximation. Finally, in \S\ref{S:Discussion}, we summarize our results and provide concluding remarks. 
 
 
 \section{Mathematical Model}\label{S:Model}
 
 \begin{figure}
 \centering
-\includegraphics[width = \textwidth]{Submitted_PRSA/make_plots/plots/figure1.pdf}
-\caption{Schematic diagram of a subglacial-plume. The plume originates at the grounding line, where the ice shelf is inclined at an angle $\alpha$ to the horizontal. The grounding line is located at a depth $-Z_{gl} >0$ below sea level; we use shifted co-ordinates, with $Z = 0$ corresponding to the depth of the grounding line (i.e. sea level is at $Z = -Z_{gl}$). The plume is quasi-one-dimensional: it is described by its thickness $D(X)$, depth-averaged velocity $U(X)$, depth-averaged salinity $S(X)$, and depth-averaged temperature $T(X)$.  The plume gains mass by melting the ice shelf at a rate $\dot{m}$ and entraining ambient water at a rate $\dot{e}$. The plume is separated from the ice shelf base by a thin turbulent boundary layer across which heat and salt are exchanged with the face; $T_b$ and $S_b$ denote the temperature and salinity on the plume side of this viscous boundary layer. \red{Needs updating to the correct version with boundary layer in the ice} }\label{fig:Schematic}
+\includegraphics[width = 0.9\textwidth]{Submitted_PRSA/make_plots/plots/figure1.pdf}
+\caption{Schematic diagram of a subglacial-plume. The plume originates at the grounding line, where the ice shelf is inclined at an angle $\alpha$ to the horizontal. The grounding line is located at a depth $-Z_{gl} >0$ below sea level; we use shifted co-ordinates, with $Z = 0$ corresponding to the depth of the grounding line (i.e. sea level is at $Z = -Z_{gl}$). The plume is quasi-one-dimensional: it is described by its thickness $D(X)$, depth-averaged velocity $U(X)$, depth-averaged salinity $S(X)$, and depth-averaged temperature $T(X)$.  The plume gains mass by melting the ice shelf at a rate $\dot{m}$ and entraining ambient water at a rate $\dot{e}$. The plume is separated from the ice shelf base by a molecular sublayer in the ocean, across which heat and salt are exchanged with the face; $T_b$ and $S_b$ denote the temperature and salinity on the ice side of this boundary layer (see inset).}\label{fig:Schematic}
 \end{figure}
 
-We begin by providing a brief outline of the plume model of~\cite{Jenkins1991JGeophysResOceans} and~\cite{Jenkins2011JPhysOcean}. The configuration is shown schematically in figure~\ref{fig:Schematic}. The $X$-axis is aligned with the ice-ocean interface (referred to henceforth as the ice shelf base) at the grounding line, and the $Z$-axis is aligned vertically; the origin of this co-ordinate system is the grounding line. The ice shelf base is located at $Z = Z_b(X)$, and the angle of the base at the grounding line is denoted by $\alpha$ (i.e. $\alpha = Z_b'(0)$, where $'$ denotes differentiation with respect to $X$).
+We begin by providing a brief outline of the plume model of~\citet{Jenkins1991JGeophysResOceans} and~\citet{Jenkins2011JPhysOcean}. The configuration is shown schematically in figure~\ref{fig:Schematic}. The $X$-axis is aligned with the ice-ocean interface (referred to henceforth as the ice shelf base) at the grounding line, and the $Z$-axis is aligned vertically; the origin of this co-ordinate system is the grounding line. The ice shelf base is located at $Z = Z_b(X)$, and the angle of the base at the grounding line is denoted by $\alpha$ (i.e. $\alpha = Z_b'(0)$, where $'$ denotes differentiation with respect to $X$).
 
 Ultimately, we intend our results to  be applicable to ice shelves in Antarctica, which are characterized by ice shelf bases with low aspect ratios, $\alpha \ll 1$. In particular, this assumption means that the angle of inclination of the ice shelf base from the horizontal can be approximated by $Z_b'(X)$ (rather than a derivative with respect to an arc-length parameter measured along the ice-shelf base) and the distance from the grounding line along the ice shelf base can be approximated by the $X$ co-ordinate. The shallow slope assumption also means that the vertical depth and depth normal to the ice shelf base can be used interchangeably. We shall assume that the derivatives of $Z_b$ are well-defined everywhere, that the ice shelf base has a monotonic increasing profile $Z_b'(X) >0$, and that $\alpha$ is a characteristic slope throughout (i.e. $Z_b'(X)\sim \alpha$ for all $X >0$). 
 
@@ -139,7 +139,7 @@ The plume is described in terms of its depth-averaged thickness $D(X)$, velocity
 
 Temperature and salinity are exchanged across the ice-ocean interface; the temperature and salinity on the plume side of this interface are denoted by $T_b$ and $S_b$, respectively (see figure~\ref{fig:Schematic}). A boundary layer forms within the ice at the ice-ocean interface; the temperature and salinity within in the ice, far from this boundary layer, are denoted by $T_i$ and $S_i$, respectively. The ambient ocean has salinity $S_a(Z)$ and temperature $T_a(Z)$; both of these feed into the ambient density $\rho_a(Z)$, through which the plume `feels' the stratification of the ambient ocean.  We shall discuss in due course the appropriate choice of ambient temperature and salinity profiles which allow us to impose the aforementioned two layer stratification. 
 
-The plume is separated from the ice by a viscous boundary layer, across which temperature and salinity are exchanged (inset in figure~\ref{fig:Schematic}); the salinity and temperature on the ice and plume sides of the viscous boundary layer are denoted by $S_i$, $T_i$, and $S_b$, $T_b$ respectively. The ambient ocean has salinity $S_a(Z)$ and temperature $T_a(Z)$; both of these feed into the ambient density $\rho_a(Z)$, through which the plume `feels' the stratification of the ambient ocean.  We shall discuss in due course our choice of ambient temperature and salinity, which permit us to impose the aforementioned two layer stratification. 
+The plume is separated from the ice by a molecular sublayer, across which temperature and salinity are exchanged (inset in figure~\ref{fig:Schematic}); the salinity and temperature on the plume sides of this boundary layer are denoted by $S_b$ and $T_b$ respectively. The ambient ocean has salinity $S_a(Z)$ and temperature $T_a(Z)$, both of which feed into the ambient density $\rho_a(Z)$, through which the plume `feels' the stratification of the ambient ocean.  We shall discuss in due course our choice of ambient temperature and salinity, which permit us to impose the aforementioned two layer stratification. 
 
 \subsection{Conservation Equations} 
 After applying the assumptions described above, and making a standard Boussinesq approximation, conservation of mass, momentum, salt, and heat require the following system of ordinary differential equations (ODEs) to hold~\citep{Jenkins2011JPhysOcean,Magorrian2016JGeoResOcean}:
@@ -220,7 +220,7 @@ Here $c, c_i$ are the specific heat capacities of water and ice, respectively, $
 
 A common alternative to the melting closure~\eqref{E:Modelling:Model:Closure:3eqn3}--\eqref{E:Modelling:Model:Closure:3eqn2} is the `two-equation formulation' described by~\citet{McPhee1992JGeophysResOcean}. This formulation uses the following approximation to the heat balance~\eqref{E:Modelling:Model:Closure:3eqn2}:
 \begin{equation}
-\dot{m}L + \dot{m}c_i (T_f - T_i) &= c~ \mathrm{St} ~U(T - T_f),\label{E:Modelling:Model:Closure:2eqn1}
+\dot{m}L + \dot{m}c_i (T_f - T_i) = c~ \mathrm{St} ~U(T - T_f),\label{E:Modelling:Model:Closure:2eqn1}
 %T_f &= T_0 + \lambda (Z_{gl} + Z_b) - \Gamma S,\label{E:Modelling:Model:Closure:2eqn2}
 \end{equation}
 in which the interfacial temperature $T_b$ is replaced by $T_f =T_0 + \lambda (Z_{gl} + Z_b) - \Gamma S$, the freezing temperature outside the boundary layer on the underside of the ice shelf, and $\mathrm{St}$ is a composite Stanton number, which parametrizes exchanges of heat and salt across the boundary layer simultaneously.
@@ -263,16 +263,16 @@ which is the freezing temperature associated with the ambient salinity observed 
 \subsubsection{Ambient Stratification}\label{S:Model:Pycnocline}
 \begin{figure}
 \centering
-\includegraphics[scale =0.5]{Submitted_PRSA/make_plots/plots/figure2.png}
-\caption{Plot of (a) the ambient salinity profile~\eqref{E:Modelling:Pycnocline:Sa} and (b) ambient temperature profile~\eqref{E:Modelling:Pycnocline:Ta} as a function of distance above sea level, $Z + Z_{gl}$, using a grounding line depth $Z_{gl} = -1500~\si{\meter}$ and pycnocline lengthscale $\ell_t = 50~\si{\meter}$. In both plots, the shaded area indicates the region $Z_0 - 2\ell_t < Z < Z_0 + 2\ell_t$ in which the majority of the change in the salinity and temperature occurs.}\label{fig:Pycnocline_Profiles}
+\includegraphics[scale =0.4]{Submitted_PRSA/make_plots/plots/figure2.png}
+\caption{Plot of (a) the ambient salinity profile and (b) ambient temperature profile from~\eqref{E:Modelling:Pycnocline:AmbientProfiles} as a function of distance above sea level, $Z + Z_{gl}$, using a grounding line depth $Z_{gl} = -1500~\si{\meter}$ and pycnocline lengthscale $\ell_t = 50~\si{\meter}$. In both plots, the shaded area indicates the region $Z_0 - 2\ell_t < Z < Z_0 + 2\ell_t$ in which the majority of the change in the salinity and temperature occurs.}\label{fig:Pycnocline_Profiles}
 \end{figure}
 
 As discussed, we assume a two-layer ambient stratification in which warm, salty water of constant temperature $T_l$ and salinity $S_l$ in a lower layer sits beneath an upper layer of cold, fresh water of constant temperature $T_u < T_l$ and salinity $S_u < S_l$. The two layers are separated by a thin pycnocline centred at a depth $Z = Z_0$, which has a characteristic thickness scale $\ell_t$ across which the temperature and salinity vary. We impose this ambient stratification by taking
-\begin{align}
-S_a(Z) &= \frac{1}{2}\left[S_l + S_u - (S_l - S_u)\tanh\left(\frac{Z - Z_0}{\ell_t}\right)\right],\label{E:Modelling:Pycnocline:Sa}\\
-T_a(Z) &= \frac{1}{2}\left[T_l + T_u - (T_l - T_u)\tanh\left(\frac{Z - Z_0}{\ell_t}\right)\right],\label{E:Modelling:Pycnocline:Ta}
-\end{align}
-in~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal}. Profiles of~\eqref{E:Modelling:Pycnocline:Sa}--\eqref{E:Modelling:Pycnocline:Ta} are shown in figure~\ref{fig:Pycnocline_Profiles}. 
+\begin{equation}\label{E:Modelling:Pycnocline:AmbientProfiles}
+S_a = \frac{1}{2}\left[S_l + S_u - (S_l - S_u)\tanh\left(\frac{Z - Z_0}{\ell_t}\right)\right], \quad
+T_a = \frac{1}{2}\left[T_l + T_u - (T_l - T_u)\tanh\left(\frac{Z - Z_0}{\ell_t}\right)\right],
+\end{equation} % \label{E:Modelling:Pycnocline:Ta}
+in~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal}. Profiles of~\eqref{E:Modelling:Pycnocline:AmbientProfiles} are shown in figure~\ref{fig:Pycnocline_Profiles}. 
 
 \subsection{Similarity Solution}\label{S:Model:SimilaritySolution}
 Before we proceed with a non-dimensionalization of the model equations~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal}, it is instructive to consider the behaviour near the grounding line. There, the in situ freezing point is approximately constant, the ice shelf base has an approximately constant slope ($Z_b(X) \approx \alpha X$), and the plume has no information about gradients in the ambient temperature or salinity. Under these conditions, the problem has no intrinsic length scale and a similarity solution to~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal} exists~\citep{Magorrian2016JGeoResOcean}:
@@ -296,22 +296,15 @@ We use the similarity solution~\eqref{E:Similarity:SimilaritySol1}--\eqref{E:Sim
 \end{align}
 (Note that variable scales have been simplified slightly from those expected from~\eqref{E:Similarity:SimilaritySol1}--\eqref{E:Similarity:SimilaritySol2} by using $E_0 \alpha \ll C_d$, $St$ and $\beta_T L /c \ll \beta_S S_l$.)
 
-We take the vertical lengthscale
-\begin{equation}
-\left[Z\right] = \ell_0=\frac{ \tau }{\lambda}.
-\end{equation}
-This is the vertical distance associated with a change in the local freezing point from a temperature $\tau$ to zero degrees. The corresponding length scale in the $X$-direction is
-\begin{equation}\label{E:NonDim:Xscale}
-\left[X\right] =\frac{ \ell_0}{\alpha}=\frac{ \tau }{\alpha \lambda}.
-\end{equation}
+We take the vertical lengthscale $\left[Z\right] = \ell_0= \tau / \lambda$, which is the vertical distance associated with a change in the local freezing point from a temperature $\tau$ to zero degrees. The corresponding length scale in the $X$-direction is $\left[X\right] = \ell_0 / \alpha=\tau/ (\alpha \lambda)$.
 
-Combining the expressions~\eqref{E:Similarity:Scales1}--\eqref{E:NonDim:Xscale} gives a consistent set of variable scales; the problem is non-dimensionalized by introducing variables scaled accordingly (denoted by  $\hat{.}$):
+Combining the expressions~\eqref{E:Similarity:Scales1}--\eqref{E:Similarity:Scales2} with the lengthscale in the $X$ direction gives a consistent set of variable scales; the problem is non-dimensionalized by introducing variables scaled accordingly (denoted by  $\hat{.}$):
 \begin{align}
 D&= E_0 \ell_0 \hat{D}, & U&= \left(\frac{E_0 \alpha}{C_d} \frac{\tau}{L/c}~\beta_s S_l ~\ell_0  g\right)^{1/2}\hat{U}, & Z_b &= \ell_0 \hat{Z}_b\label{E:NonDim:NonDimVar1}\\
 \frac{\Delta \rho}{\rho_0} &= \beta_S S_l \frac{\tau}{L/c}\Delta \hat{\rho}, & \Delta T &= \frac{E_0 \alpha}{St}\tau \Delta \hat{T} & X &=\frac{\ell_0}{\alpha}\hat{X}. \label{E:NonDim:NonDimVar2}
 \end{align}
 
-Combining model equations~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal} with the ambient salinity and temperature~\eqref{E:Modelling:Pycnocline:Sa}--\eqref{E:Modelling:Pycnocline:Ta} and inserting~\eqref{E:NonDim:NonDimVar1}--\eqref{E:NonDim:NonDimVar2} gives
+Combining model equations~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Model:Thermal} with the ambient salinity and temperature~\eqref{E:Modelling:Pycnocline:AmbientProfiles} and inserting~\eqref{E:NonDim:NonDimVar1}--\eqref{E:NonDim:NonDimVar2} gives
 \begin{align}
 \dd{(\hat{D}\hat{U})}{\hat{X}} &= \hat{U} \dd{\hat{Z}_b}{\hat{X}} +\epsthree \hat{U} \Delta \hat{T},\label{E:NonDim:mass}\\
 \epsone \dd{(\hat{D}\hat{U}^2)}{\hat{X}} &= \hat{D} \Delta \hat{\rho} \dd{\hat{Z}_b}{\hat{X}} - \hat{U}^2,\label{E:NonDim:mom} \\
@@ -321,29 +314,51 @@ Combining model equations~\eqref{E:Modelling:Model:Mass}--\eqref{E:Modelling:Mod
  \end{align}
 Here $\hat{X}_0$ is the $\hat{X}$ co-ordinate at which the ice shelf base passes through the centre of the pycnocline, i.e. $\hat{Z}_b(\hat{X}_0) = \hat{Z}_0$. We shall assume  that the pycnocline is located away from the grounding line, which is encoded by taking $\hat{X}_0 = \order{1}$.
 
+%\begin{table}[!h]
+%\caption{Dimensionless parameters in the model %equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. Typical values are based on %the values listed in table~\ref{T:Constants}.}\label{T:Dimensionless_Parameters}
+%\begin{center}
+%\begin{tabular}{llll}
+%Parameter name  & Definition   & Typical Value \\
+%\hline 
+%\vspace{2pt}
+%\vspace{3pt}$\epsone$ & $  \frac{E_0 \alpha}{C_d} $  &$ 3 \times 10^{-2}$ \\
+%\vspace{2pt}$\epstwo$ & $  \frac{E_0 \alpha}{St} $ & $ 5 \times 10^{-2}$ \\
+%\vspace{2pt}$\epsthree$ & $  \frac{\tau}{L/c} $ & $ 4 \times 10^{-2}$ \\
+%\vspace{2pt}$\epsfour$ & $  \frac{S_l - S_u}{2 S_l} $  &$ 2 \times 10^{-2}$ \\
+%\vspace{2pt}$\lt$ & $  \frac{\ell_t}{\ell_0} $ & $  5 \times 10^{-3}$ \\
+%\vspace{2pt}$\Pb$ & $  \frac{L/c}{ \tau}\frac{S_l - S_u}{2S_l}\left[1 - \frac{\beta_T %(T_l - T_u)}{\beta_S (S_l - S_u)}\right]$   & $  0.2$ \\
+%\vspace{2pt}$\Pt$ & $ \frac{T_l - T_u + \Gamma( S_l - S_u)}{2 \tau}$ & $  1.2$ \\
+%\vspace{2pt}$\kappa$ & $ \frac{S_l + S_u}{2S_l} -  \frac{\beta_T L/c}{ \beta_S S_l}$ &  %$  1.2$ \\
+%\hline
+%\vspace{2pt}$k_2$ & $\frac{\epstwo}{\epsone}$ & 1.7\\
+%\vspace{2pt}$k_3$ & $\frac{\epsthree} {\epsone}$ & 1.4\\
+%\vspace{2pt}$k_4$ & $\frac{\epsfour}{\epsone}$ & 0.3\\
+%\end{tabular}
+%\end{center}
+%\vspace*{-4pt}
+%\end{table}
+
 \begin{table}[!h]
 \caption{Dimensionless parameters in the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. Typical values are based on the values listed in table~\ref{T:Constants}.}\label{T:Dimensionless_Parameters}
 \begin{center}
 \begin{tabular}{llll}
-
 Parameter name  & Definition   & Typical Value \\
 \hline 
 \vspace{2pt}
-\vspace{3pt}$\epsone$ & $  \frac{E_0 \alpha}{C_d} $  &$ 3 \times 10^{-2}$ \\
-\vspace{2pt}$\epstwo$ & $  \frac{E_0 \alpha}{St} $ & $ 5 \times 10^{-2}$ \\
-\vspace{2pt}$\epsthree$ & $  \frac{\tau}{L/c} $ & $ 4 \times 10^{-2}$ \\
-\vspace{2pt}$\epsfour$ & $  \frac{S_l - S_u}{2 S_l} $  &$ 2 \times 10^{-2}$ \\
-\vspace{2pt}$\lt$ & $  \frac{\ell_t}{\ell_0} $ & $  5 \times 10^{-3}$ \\
-\vspace{2pt}$\Pb$ & $  \frac{L/c}{ \tau}\frac{S_l - S_u}{2S_l}\left[1 - \frac{\beta_T (T_l - T_u)}{\beta_S (S_l - S_u)}\right]$   & $  0.2$ \\
-\vspace{2pt}$\Pt$ & $ \frac{T_l - T_u + \Gamma( S_l - S_u)}{2 \tau}$ & $  1.2$ \\
-\vspace{2pt}$\kappa$ & $ \frac{S_l + S_u}{2S_l} -  \frac{\beta_T L/c}{ \beta_S S_l}$ &  $  1.2$ \\
+$\epsone$ & $  E_0 \alpha /C_d $  &$ 3 \times 10^{-2}$ \\
+$\epstwo$ & $  E_0 \alpha St $ & $ 5 \times 10^{-2}$ \\
+$\epsthree$ & $  \tau c / L $ & $ 4 \times 10^{-2}$ \\
+$\epsfour$ & $  (S_l - S_u)/(2 S_l) $  &$ 2 \times 10^{-2}$ \\
+$\lt$ & $  \ell_t / \ell_0 $ & $  5 \times 10^{-3}$ \\
+$\Pb$ & $  L (S_l - S_u)/(2S_l c \tau)\left\{1 - \beta_T (T_l - T_u)/\left[\beta_S (S_l - S_u)\right]\right\}$   & $  0.2$ \\
+$\Pt$ & $ \left[T_l - T_u + \Gamma( S_l - S_u)\right]/(2 \tau)$ & $  1.2$ \\
+$\kappa$ & $ (S_l + S_u)/(2S_l) -  \beta_T L / (c \beta_S S_l)$ &  $  1.2$ \\
 \hline
-\vspace{2pt}$k_2$ & $\frac{\epstwo}{\epsone}$ & 1.7\\
-\vspace{2pt}$k_3$ & $\frac{\epsthree} {\epsone}$ & 1.4\\
-\vspace{2pt}$k_4$ & $\frac{\epsfour}{\epsone}$ & 0.3\\
+$k_2$ & $\epstwo/\epsone$ & 1.7\\
+$k_3$ & $\epsthree / \epsone$ & 1.4\\
+$k_4$ & $\epsfour/ \epsone$ & 0.3\\
 \end{tabular}
 \end{center}
-\vspace*{-4pt}
 \end{table}
  
 There are further eight dimensionless parameters in the system~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}, which are defined in table~\ref{T:Dimensionless_Parameters}. We adopt the naming convention that small parameters are denoted by $\epsilon_i$, with the exception of the dimensionless pycnocline thickness $\delta = \ell_t / \ell_0$, since this parameter is unique in defining a region of the solution, as we shall see. The other dimensionless variables, $\Pb$, $\Pt$, and $\kappa$, are treated as $\order{1}$ (table~\ref{T:Dimensionless_Parameters}).
@@ -378,7 +393,7 @@ Henceforth, hats are dropped and all quantities are assumed dimensionless, unles
 
 Before proceeding with an asymptotic analysis of the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} it is instructive to consider typical solutions, which provide insight into the characteristic behaviour and the influence of ambient stratification on it. These solutions (and those presented later) are obtained numerically; to do so, we first express the~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} as a single ODE of the form
 \begin{equation}\label{E:ExampleSolutions}
-\mathsfbi{M} \dd{\mathbf{Y}}{X} = \mathbf{F}
+\mathbf{M} \dd{\mathbf{Y}}{X} = \mathbf{F}
 \end{equation}
 where $\mathbf{Y} = (D, U, \Delta \rho, \Delta T)^\intercal$. The ODE~\eqref{E:ExampleSolutions} is solved numerically in ~\textsc{MATLAB} using the \texttt{ODE15s} routine. Software code to reproduce the calculations and figures in the paper is available at reference~\citep{PycnoclineCode}.
 
@@ -392,24 +407,24 @@ The behaviour observed in the stratified ambient case can be divided qualitative
 \section{Asymptotic Analysis}\label{S:Asymptotics}
 In this section, we present an asymptotic analysis of the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}, with a view to constructing an analytic approximation to the scaled melt rate $M = U \Delta T$. Here we consider only the leading order behaviour: all the dependent variables discussed in this section can be considered to be leading order terms in an asymptotic expansion~\citep{HinchPerturbationMethods} in powers of $\epsone$. 
 
-As part of this analysis, the four regions introduced descriptively in the previous section emerge naturally; in turn, we formally define each region, then make a variable scaling (if appropriate) and describe the structure of solutions to the resulting leading order equations, obtained by retaining only leading order terms in~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. In each region, this analysis reveals where the solution to the leading order equations breaks down; by analysing the behaviour close to this point, we obtain matching conditions for the next region downstream. As we shall see, each region has a different balance in the momentum equation to the region located upstream of it; these balances can therefore be used to characterize the regions and are listed in table~\ref{T:Balances}. 
+As part of this analysis, the four regions introduced descriptively in the previous section emerge naturally; in turn, we formally define each region, then make a variable scaling (if appropriate) and describe the structure of solutions to the resulting leading order equations, obtained by retaining only leading order terms in~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. In each region, this analysis reveals where the solution to the leading order equations breaks down; by analysing the behaviour close to this point, we obtain matching conditions for the next region downstream. %As we shall see, each region has a different balance in the momentum equation to the region located upstream of it; these balances can therefore be used to characterize the regions and are listed in table~\ref{T:Balances}. 
 
 Note that throughout this section, we use primes to denote derivatives with respect to $X$, and the argument of variables is $X$ unless specified.
 
-\begin{table}[h!]
-\caption{Nomenclature and momentum balances in the regions described in the asymptotic analysis of \S\ref{S:Asymptotics}.}
-\label{T:Balances}
-\begin{center}
-\begin{tabular}{lll}
-  Region  & Descriptive name & Leading order momentum balance    \\ \hline
-   1  & Below the pycnocline & Buoyancy, drag \\
-   2  & Pycnocline & Inertia, buoyancy, drag \\
-   3  & Above the pycnocline & Buoyancy, drag \\
-   4  & Stopping & Inertia,  buoyancy, drag
-\end{tabular}
-\end{center}
-\vspace{-4pt}
-\end{table}
+%\begin{table}[h!]
+%\caption{Nomenclature and momentum balances in the regions described in the asymptotic analysis of \S\ref{S:Asymptotics}.}
+%\label{T:Balances}
+%\begin{center}
+%\begin{tabular}{lll}
+%  Region  & Descriptive name & Leading order momentum balance    \\ \hline
+%   1  & Below the pycnocline & Buoyancy, drag \\
+%   2  & Pycnocline & Inertia, buoyancy, drag \\
+%   3  & Above the pycnocline & Buoyancy, drag \\
+%   4  & Stopping & Inertia,  buoyancy, drag
+%\end{tabular}
+%\end{center}
+%\vspace{-4pt}
+%\end{table}
 
 
 \subsection{Region one: below the pycnocline}\label{S:Asymptotics:Region1}
@@ -476,7 +491,7 @@ Q =  \sqrt{\frac{\kappa}{8}}\left[1 - (1-X)^{4/3}\right]^{3/2}.
 \end{equation}
 The result|\eqref{E:Region1:Lazeroms_flux} is equivalent to that derived by~\cite{Lazeroms2019JPhysOcean}.
 
-Note that in the absence of ambient stratification, the solution~\eqref{E:Region1:flux_solution}--\eqref{E:Region1:thermal_solution} applies for all $X> 0$ where $1 - Z_b(X) = \mathcal{O}(1)$ (the solution~\eqref{E:Region1:velocity_solution} breaks down as $Z_b(X) \to 1$, where $U \to 0$ but this point is well beyond typical depths, as discussed in \S\ref{S:ExampleSolutions}). We shall return to this point in \S\ref{S:Numerics}.
+Note that in the absence of ambient stratification, the solution~\eqref{E:Region1:flux_solution}--\eqref{E:Region1:thermal_solution} applies for all $X> 0$ where $1 - Z_b(X) = \mathcal{O}(1)$ (the solution~\eqref{E:Region1:velocity_solution} breaks down as $Z_b(X) \to 1$, where $U \to 0$ but this point is well beyond typical depths, as discussed in \S2\ref{S:ExampleSolutions}). We shall return to this point in \S\ref{S:Numerics}.
 
 \subsection{Region two: pycnocline}\label{S:Asymptotics:Region2}
 The analysis of the previous section is valid while $X - X_0 = \mathcal{O}(1)$; the leading order solution~\eqref{E:Region1:flux_solution}--\eqref{E:Region1:thermal_solution} breaks down when $X - X_0 = \order{\delta}$. To analyze the behaviour there, we set
@@ -584,25 +599,28 @@ Before moving on to analyze the  region above the pycnocline, we note that the r
 
 \subsection{Region three: above the pycnocline}\label{S:Asymptotics:Region3}
 We now turn to the region above the pycnocline,  where $X > X_0$ and $X = \order{1}$. We refer to this as region three. The leading order equations in region three read
+%\begin{align}
+% (DU)' &= U Z_b',\label{E:Region3:mass}\\
+%0 &= D \Delta \rho Z_b' - U^2, \label{E:Region3:mom}\\
+%(DU\Delta \rho)'  &=\kappa U \Delta T\label{E:Region3:buoyancy}\\
+%0&= (1  - 2\Pt -  Z_b)Z_b'U- U\Delta T - DU Z_b'.\label{E:Region3:thermal}
+%\end{align}
 \begin{align}
- (DU)' &= U Z_b',\label{E:Region3:mass}\\
-0 &= D \Delta \rho Z_b' - U^2, \label{E:Region3:mom}\\
-(DU\Delta \rho)'  &=\kappa U \Delta T\label{E:Region3:buoyancy}\\
+ (DU)' &= U Z_b', &
+0 &= D \Delta \rho Z_b' - U^2, \label{E:Region3:mass}\\
+(DU\Delta \rho)'  &=\kappa U \Delta T &
 0&= (1  - 2\Pt -  Z_b)Z_b'U- U\Delta T - DU Z_b'.\label{E:Region3:thermal}
 \end{align}
-The system~\eqref{E:Region3:mass}--\eqref{E:Region3:thermal} is almost identical to~\eqref{E:Region1:mass}--\eqref{E:Region1:thermal} (the leading order equations in region one): buoyancy balances drag in the momentum equation, mass flux is driven solely by entrainment, and buoyancy variations are controlled by melting only. However, conservation of thermal driving~\eqref{E:Region3:thermal} reflects a different ambient temperature to~\eqref{E:Region1:thermal}, having crossed the pycnocline.
+
+The system~\eqref{E:Region3:mass}--\eqref{E:Region3:thermal} is almost identical to~\eqref{E:Region1:mass}--\eqref{E:Region1:thermal} (the leading order equations in region one): buoyancy balances drag in the momentum equation, mass flux is driven solely by entrainment, and buoyancy variations are controlled by melting only. However, conservation of thermal driving (second of~\eqref{E:Region3:thermal}) reflects a different ambient temperature to~\eqref{E:Region1:thermal}, having crossed the pycnocline.
 
 Equations~\eqref{E:Region3:mass}--\eqref{E:Region3:thermal} are to be solved for $X > X_0$, alongside boundary conditions obtained by matching to region two:
 \begin{equation}\label{E:Region3:MatchingConditions}
-U = U_\out, \quad D = \frac{Q_\in}{U_\out}, \quad \Delta \rho = \Delta \rho_\out, \quad \Delta T = \Delta T_\out,
+U = U_\out, \quad D = \frac{Q_\in}{U_\out}, \quad \Delta \rho = \Delta \rho_\out, \quad \Delta T = \Delta T_\out \quad \text{at}~X = X_0.
 \end{equation}
-at $X = X_0$. 
 
-We proceed as in \S3\ref{S:Asymptotics:Region1}: from~\eqref{E:Region3:mass}, the flux $Q$ and velocity $U$ are again related by
-\begin{equation}\label{E:Region3:U_Q_relation}
-U = \frac{Q'}{Z_b'},
-\end{equation}
-which, when combined with~\eqref{E:Region3:mom}--\eqref{E:Region3:thermal}, gives a second order ODE for $Q$. Integrating this ODE once alongside~\eqref{E:Region3:MatchingConditions} gives
+We proceed as in \S3\ref{S:Asymptotics:Region1}: from the first of~\eqref{E:Region3:mass}, the flux $Q = DU$ and velocity $U$ are again related by $U =Q'/Z_b'$,
+which, when combined with the remaining three equations in~\eqref{E:Region3:mass}--\eqref{E:Region3:thermal}, gives a second order ODE for $Q$. Integrating this ODE once alongside~\eqref{E:Region3:MatchingConditions} gives
 \begin{equation}\label{E:Region3:Q_ODE}
 %\left(Q'\right)^3 =\kappa \left(Z_b'\right)^4 \left\{\left(1 - Z_b\right)Q - 2\Pt\left(Q - Q_\in\right) -\left[1 - Z_b(X_0)\right]Q_\in\right\} + \frac{U_\out^3}{Z_b'(X_0)}\left(Z_b'\right)^4.
 \frac{\left[Q'(X)\right]^3}{\left[Z_b'(X)\right]^4} = \kappa \left\{ \left[1 - Z_b(X) - 2P_T\right] Q(X) - \left[1 - Z_b(X_0) - 2P_T\right]Q_\text{in}\right\} + \frac{U_\text{out}^3}{Z_b'(X_0)}
@@ -614,35 +632,15 @@ Unlike~\eqref{E:Region1:flux_ODE} -- the corresponding ODE for region one -- equ
 \left[1 - Z_b(X_c)\right]Q_c - 2\Pt\left(Q_c - Q_\in\right) -\left[1 - Z_b(X_0)\right]Q_\in +  \frac{U_\out^3}{\kappa Z_b'(X_0)} = 0.
 \end{equation}
 
-Secondly, it is instructive to analyse the behaviour as $X \to X_c$. To do so, a rescaling of the model equations to reflect a change in asymptotic order is required; we introduce
-%\begin{align}
-%U &\sim \kappa^{1/3} Z_b'(X_c)^{2/3} Q_c^{1/3}(X_c - X)^{1/3}, & D &\sim \kappa^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}(X_c - X)^{-1/3},\label{E:Region3:X_to_Xc1}\\
-%\Delta \rho &\sim  \kappa Z_b'(X_c) (X_c - X), & \Delta T &\sim -\kappa^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}(X_c - X)^{-1/3}\label{E:Region3:X_to_Xc2}
-%\end{align}
-\begin{equation}\label{E:Region3:Rescaling}
-X = X_c + \varepsilon \tilde{X}, \quad Q = Q_c + \varepsilon^\gamma \tilde{Q}
-\end{equation}
-where $\varepsilon \ll 1$ is arbitrary, $\tilde{X} =\order{1}$ is negative, $\tilde{Q} = \order{1}$ and $\gamma >0$ is to be determined. Inserting~\eqref{E:Region3:Rescaling} into~\eqref{E:Region3:Q_ODE} gives
-\begin{equation}\label{E:Region3:RescaledODE}
-\varepsilon^{3(\gamma - 1)}\frac{\left(\tilde{Q'}\right)^3}{\left[Z_b'(X_c)\right]^4}\left[1 + \order{\varepsilon} \right]= -\varepsilon\lambda\tilde{X}Z_b'(X_c)Q_c + \varepsilon^\gamma \left[1 - 2\Pt - Z_b(X_c)\right] \tilde{Q} + \order{\varepsilon^2, \varepsilon^{\gamma + 1}}.
-\end{equation}
-A dominant balance is obtained in~\eqref{E:Region3:RescaledODE} by taking $\gamma = 4/3$. After setting $\gamma = 4/3$ in~\eqref{E:Region3:RescaledODE}, applying~\eqref{E:Region3:U_Q_relation} and undoing the rescaling~\eqref{E:Region3:Rescaling}, we find 
-\begin{equation}\label{E:Region3:U_asym}
-U \sim \kappa^{1/3} Z_b'(X_c)^{2/3} Q_c^{1/3}(X_c - X)^{1/3} \quad \text{as}~X \to X_c^-.
-\end{equation}
-From~\eqref{E:Region3:Rescaling}, we have $Q \sim Q_c + \order{\varepsilon^{4/3}}$. Combining this with~\eqref{E:Region3:U_Q_relation} gives
-\begin{equation}\label{E:Region3:D_asym}
-D \sim \kappa^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}(X_c - X)^{-1/3} \quad \text{as}~X \to X_c^-.
-\end{equation}
-A balance in the momentum equation~\eqref{E:Region3:mom} gives
-\begin{equation}\label{E:Region3:drho_asym}
-\Delta \rho \sim  \kappa Z_b'(X_c) (X_c - X)\quad \text{as}~X \to X_c^-.
-\end{equation}
-while a balance in the thermal driving equation~\eqref{E:Region3:thermal} requires
-\begin{equation}\label{E:Region3:dT_asym}
- \Delta T \sim -\kappa^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}(X_c - X)^{-1/3} \quad \text{as}~X \to X_c^-.
- \end{equation}
-The asymptotic results~\eqref{E:Region3:U_asym}--\eqref{E:Region3:dT_asym} also inform the matching conditions on the region around $X_c$, which we turn to now.
+Secondly, it is instructive to analyse the behaviour as $X \to X_c$. As we show in the supplementary information, the following behaviour holds in the limit $X \to X_c^-$:
+\begin{align}
+U &\sim \kappa^{1/3} Z_b'(X_c)^{2/3} Q_c^{1/3}(X_c - X)^{1/3}, & 
+D &\sim \kappa^{-1/3} Z_b'(X_c)^{-2/3} Q_c^{2/3}(X_c - X)^{-1/3}, \label{E:Region3:UD_asym} \\
+\Delta \rho &\sim  \kappa Z_b'(X_c) (X_c - X), &
+ \Delta T &\sim -\kappa^{-1/3} Z_b'(X_c)^{1/3} Q_c^{2/3}(X_c - X)^{-1/3}.\label{E:Region3:drhodT_asym}
+ \end{align}
+The asymptotic results~\eqref{E:Region3:UD_asym}--\eqref{E:Region3:drhodT_asym} also inform the matching conditions on the region around $X_c$, which we turn to now.
+
 
 %Before moving on to analyse Region 5, we note that, as we shall see in \S\ref{S:Numerics}, the point $X_c$ is only located below sea level (where it is physically relevant) in ice shelves with uncommon parameters -- corresponding to very deep grounding lines or very cold ambient conditions, for example. We shall also see that the melt rate is small ($\order{\epsone}$) for $X \gtrsim X_c$: the behaviour above $X_c$ is not important for the leading order melt rate. However, we include the analysis for completeness, because of its relevance to other physical systems in which thin flows experience a competition between buoyancy and drag (such as Katabatic winds), and because the results of the analysis have implications for the 'layered-plume' hypothesis proposed by~\cite{Magorrian2016JGeoResOcean}. 
 
@@ -658,18 +656,19 @@ The analysis of the previous section breaks down as $X \to X_c$, where $U \to 0$
 \begin{equation}\label{E:Region4:X_scaling}
 X = X_c + \epsone^{3/4}\chi,
 \end{equation}
-where $\chi = \order{1}$. The behaviour~\eqref{E:Region3:D_asym}--\eqref{E:Region3:dT_asym} then informs us of the size of the dependent variables; we introduce appropriately scaled variables
+where $\chi = \order{1}$. The behaviour~\eqref{E:Region3:UD_asym}--\eqref{E:Region3:drhodT_asym} then informs us of the size of the dependent variables; we introduce appropriately scaled variables
 \begin{equation}\label{E:Region4:var_scaling}
 U = \epsone^{1/4}\U, \quad D = \epsone^{-1/4}\D, \quad \Delta \rho = \epsone^{3/4}\p, \quad  \Delta T = \epsone^{-1/4} \t.
 \end{equation}
 
 Inserting~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} into the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}, and retaining only leading order terms gives
 \begin{align}
-\dd{(\D\U)}{\chi} &=0,\label{E:Region4:mass_scaled}\\
-\dd{(\D \U^2)}{\chi} &=  \D \p Z_b'(X_c) -\U^2,\label{E:Region4:mom_scaled}\\
-\dd{(\D\U\p)}{\chi} &=\kappa  \U\t,\label{E:Region4:buoyancy_scaled}\\
+\dd{(\D\U)}{\chi} &=0, &
+\dd{(\D \U^2)}{\chi} &=  \D \p Z_b'(X_c) -\U^2,\label{E:Region4:mass_scaled}\\
+\dd{(\D\U\p)}{\chi} &=\kappa  \U\t, &
 k_2 \dd{(\D \U \t)}{\chi} &=- \U \t - \D \U Z_b'(X_c).\label{E:Region4:thermal_scaled}
 \end{align}
+
 
 Matching with region three requires that the solution to~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} satisfies
 \begin{align}
@@ -678,21 +677,21 @@ Matching with region three requires that the solution to~\eqref{E:Region4:mass_s
 \end{align}
 as $\chi \to -\infty$. (Again, numerical solutions of~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} are obtained on restricted domain, in this case for $-\chi_0 < \chi < \chi_0$ where $|\chi_0| \ll \epsone^{3/4}$.)
 
-We begin by noting that from~\eqref{E:Region4:mass_scaled}, flux is conserved is this region,
+We begin by noting that from the first of~\eqref{E:Region4:mass_scaled}, flux is conserved is this region,
 \begin{equation}\label{E:Region4:Constant_Flux}
 \D\U  = Q_c.
 \end{equation}
-Inserting~\eqref{E:Region4:Constant_Flux} into~\eqref{E:Region4:thermal_scaled} and combining with~\eqref{E:Region4:buoyancy_scaled} gives an expression that can be directly integrated once to give
+Inserting~\eqref{E:Region4:Constant_Flux} into the second of~\eqref{E:Region4:thermal_scaled} and combining the first of~\eqref{E:Region4:thermal_scaled} gives an expression that can be directly integrated once to give
 \begin{equation}\label{E:Region4:Linear_p_t}
 \frac{\p}{\kappa} + k_2 \t = -Z_b'(X_c)\chi + C.
 \end{equation}
 Here $C$ is a constant that is determined by analysing the higher order contributions to $\Delta P$ as $X \to X_c$. However, this analysis is beyond the scope of this paper (in particular, we do not directly use the following in the construction of the approximation to the melt rate in \S\ref{S:MeltRate}).
 
 The relationships~\eqref{E:Region4:Constant_Flux} and~\eqref{E:Region4:Linear_p_t} allow us to reduce~\eqref{E:Region4:mass_scaled}--\eqref{E:Region4:thermal_scaled} to a system of two equations, which can be rescaled so that only a single parameter, $k_2$, enters:
-\begin{align}
-\tilde{\U} \dd{\tilde{\U}}{\tilde{\chi}} = \tilde{\p} - \tilde{\U}^3,\label{E:Region4:rescaled1}\\
-k_2  \dd{\tilde{\p}}{\tilde{\chi}} = -\tilde{\U}\left[\tilde{p} + \tilde{\chi}\right],\label{E:Region4:rescaled2}
-\end{align}
+\begin{equation}\label{E:Region4:rescaled}
+\tilde{\U} \dd{\tilde{\U}}{\tilde{\chi}} = \tilde{\p} - \tilde{\U}^3, \qquad 
+k_2  \dd{\tilde{\p}}{\tilde{\chi}} = -\tilde{\U}\left[\tilde{p} + \tilde{\chi}\right],
+\end{equation}
 where
 \begin{equation*}\label{E:Region4:Rescaling}
 \tilde{\chi} = \frac{\kappa^{1/4}Z_b'(X_c)^{1/2}}{Q_c^{1/2}}\left(\chi - \frac{C}{\kappa Z_b'(X_c)}\right), ~\quad  \tilde{\U} = \frac{1}{\kappa^{1/4}Z_b'(X_c)^{1/2}Q_c^{1/2}}\U,\quad \tilde{\p}= \frac{1}{\kappa^{3/4}Z_b'(X_c)^{ 1/2}Q_c^{1/2}}\p.
@@ -705,11 +704,11 @@ In terms of these rescaled variables, the matching conditions~\eqref{E:Region4:f
 
 \begin{figure}
 \centering
-\includegraphics[width = 0.99\textwidth]{Submitted_PRSA/make_plots/plots/figure5.png}
-\caption{Numerical solutions of original model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} and~\eqref{E:Region4:Rescaling}) with $\epsone = 3\times 10^{-2}$ (i.e. as in table~\ref{T:Dimensionless_Parameters}, purple curves) and with $\epsone = 3\times 10^{-3}$ (cyan curves) which are shown in (a) $(\tilde{u}, \tilde{\p})$ space and (b) $(\tilde{\chi}, \tilde{\p})$ space. The black dashed curve indicates the numerical solution of the reduced equations~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:rescaled2}, and the grey curve indicates the nullcline $\tilde{u}^3 = \tilde{\p}$. The solid black line indicates $\tilde{p} = 0$ Each of the solutions here uses a linear draft, $Z_b(X) = X$, with $Q_c = 0.5, X_c = 0.5$ and $\kappa, k_i$ according to the values in table~\ref{T:Dimensionless_Parameters}. The matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} are applied at $\tilde{\chi}_0 = 10$ in both cases. }\label{fig:Region4}
+\includegraphics[width = 0.85\textwidth]{Submitted_PRSA/make_plots/plots/figure5.png}
+\caption{Numerical solutions of original model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling} and~\eqref{E:Region4:Rescaling}) with $\epsone = 3\times 10^{-2}$ (i.e. as in table~\ref{T:Dimensionless_Parameters}, purple curves) and with $\epsone = 3\times 10^{-3}$ (cyan curves) which are shown in (a) $(\tilde{u}, \tilde{\p})$ space and (b) $(\tilde{\chi}, \tilde{\p})$ space. The black dashed curve indicates the numerical solution of the reduced equations~\eqref{E:Region4:rescaled}, and the grey curve indicates the nullcline $\tilde{u}^3 = \tilde{\p}$. The solid black line indicates $\tilde{p} = 0$ Each of the solutions here uses a linear draft, $Z_b(X) = X$, with $Q_c = 0.5, X_c = 0.5$ and $\kappa, k_i$ according to the values in table~\ref{T:Dimensionless_Parameters}. The matching conditions~\eqref{E:Region4:far_field1}--\eqref{E:Region4:far_field2} are applied at $\tilde{\chi}_0 = 10$ in both cases. }\label{fig:Region4}
 \end{figure}
 
-The system~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} must be solved numerically. In figure~\ref{fig:Region4}, we present a comparison between numerical solutions of the reduced equations~\eqref{E:Region4:rescaled1}--\eqref{E:Region4:Rescaled_farfield} and the solutions of the full equations (model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling}). We see good agreement, with solutions predominantly following the nullcline $\tilde{\p} = \tilde{\U}^3$, before deviating when the rescaled buoyancy deficit $\tilde{\p}$ approaches zero. Eventually, the buoyancy deficit goes negative, indicating that the plume has become negatively buoyant; the plume's upward motion continues for a short distance owing to inertia, before ultimately reaching $\tilde{u} = 0$, where it terminates. For the purpose of constructing an approximation to the melt rate, it is worth noting that the rescaled buoyancy is approximately linear (figure~\ref{fig:Region4}b); using this, the nullcline solution for $\tilde{u}$, which holds nearly everywhere in this region, can be approximated by $\tilde{\U} = \tilde{\chi}^{1/3}$.
+The system~\eqref{E:Region4:rescaled}--\eqref{E:Region4:Rescaled_farfield} must be solved numerically. In figure~\ref{fig:Region4}, we present a comparison between numerical solutions of these equations and the solutions of the full equations (model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal} rescaled according to~\eqref{E:Region4:X_scaling}--\eqref{E:Region4:var_scaling}). We see good agreement, with solutions predominantly following the nullcline $\tilde{\p} = \tilde{\U}^3$, before deviating when the rescaled buoyancy deficit $\tilde{\p}$ approaches zero. Eventually, the buoyancy deficit goes negative, indicating that the plume has become negatively buoyant; the plume's upward motion continues for a short distance owing to inertia, before ultimately reaching $\tilde{u} = 0$, where it terminates. For the purpose of constructing an approximation to the melt rate, it is worth noting that the rescaled buoyancy is approximately linear (figure~\ref{fig:Region4}b); using this, the nullcline solution for $\tilde{u}$, which holds nearly everywhere in this region, can be approximated by $\tilde{\U} = \tilde{\chi}^{1/3}$.
 
 \section{Approximating the melt rate}\label{S:MeltRate}
 In this section, we describe our analytic approximation $M_p(X)$ to the melt rate $M(X) = U(X)\Delta T(X)$ that emerges from the model equations~\eqref{E:NonDim:mass}--\eqref{E:NonDim:thermal}. This approximation builds upon the asymptotic analysis of \S\ref{S:Asymptotics}, and we consider each of the four regions identified in turn.
@@ -751,38 +750,29 @@ Our strategy for this region, $X_0 + 2N_l \lt < X < X_c$, is to split it into tw
 
 For the lower part, $X_0  + 2N_l \lt < X \leq X^*$, we exploit the proximity to the pycnocline to artificially construct a small parameter, and seek an asymptotic expansion of the pertinent variables in this parameter. For the upper half, $X^* < X < X_c$, we mimic the behaviour as $X \to X_c$; in doing so we are able to simultaneously describe the behaviour in this region whilst also determining the values of $X_c$ and $Q_c = Q(X_c)$.
 
-In more detail, for the lower half we introduce 
-\begin{equation}
-\varepsilon = X^* - X_0,
-\end{equation}
-which we consider to be a small, positive parameter. We then set 
-\begin{equation}
-X = X_0 + \varepsilon Y,
-\end{equation}
-where  $Y = \order{1}$, in the ODE~\eqref{E:Region3:Q_ODE} for the flux $Q$ in region three, and attempt to account for variations in $Q$ away from $Q_{\text{in}} = Q(X_0)$ by expanding in powers of $\varepsilon$:
+In more detail, for the lower half we introduce $\varepsilon = X^* - X_0$,
+which we consider to be a small, positive parameter. We then set $X = X_0 + \varepsilon Y$, where  $Y = \order{1}$, in the ODE~\eqref{E:Region3:Q_ODE} for the flux $Q$ in region three, and attempt to account for variations in $Q$ away from $Q_{\text{in}} = Q(X_0)$ by expanding in powers of $\varepsilon$:
 \begin{equation}\label{E:MeltRate:Q_expansionR3}
 Q = Q_{3l} \coloneqq   Q_\in  + \sum_{i = 1}^{\infty} \varepsilon^i Q_i(Y), \qquad Q_i \sim \order{1}.
  \end{equation}
-Equating powers of $\varepsilon$ leads to a hierarchy of simple ODEs for the $Q_i$, which can be solved analytically in series. Solving the equations that arise at $\order{1}$, $\order{\varepsilon}$, and $\order{\varepsilon^2}$ gives, respectively,
-\begin{equation}
-Q_1(Y) = K_1 Y, \quad Q_2(Y) = K_2 Y^2, \quad Q_3(Y) =K_3 Y^3.
-\end{equation}
-%where the $K_i$, $i = 1,~2,~3$ are known functions of $\kappa$, $U_{\text{out}}$, $P_T$, and $Z_b$.
-where
-\begin{align}
-K_1 &=  Z_b'(X_0) U_\out,\\
-K_2 &= \frac{1}{6K_1^2}\left\{4\left[Z_b'(X_0)\right]^2 Z_b''(X_0)U_\out^3 \right. + \nonumber \\ \qquad \qquad &\left. \qquad  \kappa \left[Z_b'(X_0)\right]^4 \left[(1 - Z_b(X_0) - 2\Pt\right] K_1 - \left[Z_b'(X_0)\right] Q_\in\right\}\\
-K_3 &= \frac{\hat{K}_3 - 3K_1 K_2^2}{9K_1^2}.
-\end{align}
-where
+Equating powers of $\varepsilon$ leads to a hierarchy of simple ODEs for the $Q_i$, which can be solved analytically in series. Solving the equations that arise at $\order{1}$, $\order{\varepsilon}$, and $\order{\varepsilon^2}$ gives, respectively, $
+Q_1(Y) = K_1 Y,  Q_2(Y) = K_2 Y^2,  Q_3(Y) =K_3 Y^3$, where the $K_i$, $i = 1,~2,~3$ are known functions of $\kappa$, $U_{\text{out}}$, $P_T$, and $Z_b$.
+
+%where
+%\begin{align}
+%K_1 &=  Z_b'(X_0) U_\out,\\
+%K_2 &= \frac{1}{6K_1^2}\left\{4\left[Z_b'(X_0)\right]^2 Z_b''(X_0)U_\out^3 \right. + \nonumber \\ \qquad \qquad &\left. \qquad  \kappa \left[Z_b'(X_0)\right]^4 \left[(1 - Z_b(X_0) - 2\Pt\right] K_1 - \left[Z_b'(X_0)\right] Q_\in\right\}\\
+%K_3 &= \frac{\hat{K}_3 - 3K_1 K_2^2}{9K_1^2}.
+%\end{align}
+%where
 %\begin{multline}
 %        \hat{K}_3  = \kappa Z_b'(X_0)^4\left\{\left[1 - Z_b(X_0) - 2P_T \right]K_2 - Z_b'(X_0)K_1 - \frac{Z_b''(X_0)Q_\in}{2}\right\} + \\
 % 4 \kappa  Z_b'(X_0)^3 Z_b''(X_0)\left\{\left[1 - Z_b(X_0) - 2P_T\right]K_1 - Z_b'(X_0)Q_\in\right\} + \\
 % 2U_\out^3\left[Z_b'(X_0)^2 Z_b'''(X_0) + 3Z_b'(X_0) Z_b''(X_0)^2 \right].
 %\end{multline}
-with $\hat{K}_3$ a known function of $Z_b$ and its derivatives at $X_0$, $P_T$, $\kappa$, and $U_\text{out}$.
+%with $\hat{K}_3$ a known function of $Z_b$ and its derivatives at $X_0$, $P_T$, $\kappa$, and $U_\text{out}$.
 
-Using $Q' = U Z_b'$ (equation~\eqref{E:Region3:U_Q_relation}), the velocity associated with~\eqref{E:MeltRate:Q_expansionR3} is
+Using $Q' = U Z_b'$ from before, the velocity associated with~\eqref{E:MeltRate:Q_expansionR3} is
  \begin{equation}\label{E:MeltRate:U_expansionR3}
 U = U_{3l} \coloneqq \frac{1}{Z_b'(X)} \sum_{i = 1}^{\infty} \varepsilon^{i-1} \dd{Q_i}{Y}.
 \end{equation}
@@ -799,7 +789,7 @@ M_{p}(X) = M_{p,3l}(X)\coloneqq Z_b'(X)^{5/2}\left\{\left[1  - 2\Pt -  Z_b(X)\ri
 \end{equation}
 for $X_0 + N_l \lt < X < X^*$. (Explicitly, the prefactor $Z_b'(X)^{5/2}$ arises as the product of $Z_b'(X)$, which appears in the conservation of thermal driving~\eqref{E:Region3:thermal}, and $Z_b'(X)^{3/2}$, the scaling of the aspect ratio in the non-dimensionalization -- see~\eqref{E:MeltRate:DimensionalMelt}.)
 
-Our construction in the upper part of region three, $X^* < X < X_c$, is motivated by the asymptotic behaviour as $X \to X_c$. Since $Q_c$, and thus the prefactor in~\eqref{E:Region3:U_asym}, are unknown, we first express the velocity in $X^* < X < X_c$ according to~\eqref{E:Region3:MatchingConditions} describing the asymptotic behaviour as $X\to X_c$, albeit with an arbitrary prefactor:
+Our construction in the upper part of region three, $X^* < X < X_c$, is motivated by the asymptotic behaviour as $X \to X_c$. Since $Q_c$, and thus the prefactor in~\eqref{E:Region3:UD_asym}, are unknown, we first express the velocity in $X^* < X < X_c$ according to~\eqref{E:Region3:MatchingConditions} describing the asymptotic behaviour as $X\to X_c$, albeit with an arbitrary prefactor:
 \begin{equation}\label{E:MeltRate:Region3u_U}
 U =U_{3u} =  C (X_c - X)^{1/3},
 \end{equation} 
@@ -817,7 +807,7 @@ M_p(X) = M_{p,3u}(X) \coloneqq Z_b'(X)^{5/2}\left\{ \left[1  - 2\Pt -  Z_b(X)\ri
 \end{equation}
 for $X^* < X < X_c$. Note that in~\eqref{E:MeltRate:regions3_u}, we have made the approximation $Q \approx Q_{3l}(X^*)$ for all in $X^* < X < X_c$, which is justified by noting that the flux is constant as $X \to X_c$ from~\eqref{E:Region4:Constant_Flux}.
 
-In summary, with the exception of the special cases mentioned above, our approximation to the dimensionless melt rate takes values
+In summary, except for the special cases mentioned above, our approximation to the dimensionless melt rate takes values
 \begin{equation}\label{E:MeltRate:AllRegions}
 M_{p}(X) = \begin{cases} 
 M_{p,1}(X) \text{~~\quad [equation~\eqref{E:MeltRate:region1}]}  & 0 < X < X_0 - N_l \lt,\\
@@ -826,25 +816,7 @@ M_{p,3l}(X) \text{~\quad [equation~\eqref{E:MeltRate:regions3_l}]} & X_0 + N_l \
 M_{p,3u}(X) \text{\quad [equation~\eqref{E:MeltRate:regions3_u}]} & X^* < X < X_c.
 \end{cases}
 \end{equation}
-If $\Delta \rho_{\in} - 2 \Pb Z_b'(X_0) < 0$, our analysis suggests that the plume will intrude into the ambient within the pycnocline. In this case, we still take a linear interpolation across the pycnocline, but with zero speed and thermal driving upon exiting:
-\begin{equation}
-M_{p} = \begin{cases} 
-M_{p,1~} \text{~\quad [equation~\eqref{E:MeltRate:region1}]}  & 0 < X < X_0 - N_l \lt,\\
-M_{p,2~} \text{~\quad [equation~\eqref{E:MeltRate:regions2}]} & X_0 - N_l \lt < X <X_{\text{sep}} ,\\
-0  &  X > X_{\text{sep}},\\
-\end{cases}
-\end{equation}
-where $X_{\text{sep}}$ is the value of $X$ at which $M_{p,2} = 0$.
-
-These second exception case occurs when no physically relevant solution of~\eqref{E:MeltRate:quadratic_for_xstar} for the `cross-over' point $X^*$ exists. In this case,  the scaled melt rate takes values
-\begin{equation}\label{E:MeltRate:AllRegions_noroot}
-M_{p} = \begin{cases} 
-M_{p,1~} \text{~\quad [equation~\eqref{E:MeltRate:region1}]}  & 0 < X < X_0 - N_l \lt,\\
-M_{p,2~} \text{~\quad [equation~\eqref{E:MeltRate:regions2}]} & X_0 - N_l \lt < X < X_0 + N_l \lt,\\
-M_{p,3l~} \text{\quad [equation~\eqref{E:MeltRate:regions3_l}]} &  X > X_0 + N_l \lt.
-\end{cases}
-\end{equation}.
-Finally, if the computed termination point $X_c$ does not satisfy $X_c > X^*$, we take $M_p$ as in~\eqref{E:MeltRate:AllRegions_noroot}.
+The corresponding construction in the special cases is set out explicitly in the supplementary information.
 
 Our approximation to the dimensional melt rate is obtained by undoing the various scalings:
 \begin{equation}\label{E:MeltRate:DimensionalMelt}
@@ -860,11 +832,11 @@ In theory, we have made two improvements upon the L19 and L19AH approximations: 
 \subsection{Isolating Basal Geometry}\label{S:Numerics:NoPycnocline}
 \begin{figure}
 \centering
-\includegraphics[width = \textwidth]{Submitted_PRSA/make_plots/plots/figure6.png}
+\includegraphics[width = 0.9\textwidth]{Submitted_PRSA/make_plots/plots/figure6.png}
 \caption{Comparison between numerically obtained melt rates $\dot{m}= M_0 U \Delta T$ (purple curves) and the three approximations: B21 (green curves), L19AH (orange curves), and L19 (black dashed curves). Each subplot corresponds to a different ice shelf basal geometry as follows (shown schematically in the insets): (a) linear, $Z_b(X) = \alpha X$, (b) quadratic~\eqref{E:Numerics:QuadraticGeometry}), (c) linear with periodic oscillations superimposed~\eqref{E:Numerics:SinusoidalGeometry}, and (d) piecewise linear~\eqref{E:Numerics:PiecewiseGeometry}. Note that the three approximations to the melt rate are identical for the constant basal slope case in (a).  Here we use parameter values as in table~\ref{T:Constants}, except for imposing a constant ambient temperature and salinity, which we take as $ 0.5\si{\celsius}$ and $34.3~\text{PSU}$, respectively. Note that the upper limit of each the plots, $Z + Z_{gl} = 0$, corresponds to sea level, which acts as an upper bound on the extent of the ice shelf base.}   \label{fig:Numerics:Geometry}
 \end{figure}
 
-In figure~\ref{fig:Numerics:Geometry}, we present a comparison between numerically obtained melt rates and the three approximations for several basal geometries and constant ambient conditions. (For the B21 approximation, this unstratified case is recovered by setting $X_0 = \infty$ in~\eqref{E:MeltRate:DimensionalMelt}.) The scenario with constant ambient conditions may also be pertinent if the pycnocline is below the level of the grounding line, or if an obstacle such as a sea-bed ridge obscures access of the warm, salty lower layer to the ice front, as is the case for Pine Island Glacier~\cite{DeRydt2014JGeophysResOceans, Bradley2021}. 
+In figure~\ref{fig:Numerics:Geometry}, we present a comparison between numerically obtained melt rates and the three approximations for several basal geometries and constant ambient conditions. (For the B21 approximation, this unstratified case is recovered by setting $X_0 = \infty$ in~\eqref{E:MeltRate:DimensionalMelt}.) The scenario with constant ambient conditions may also be pertinent if the pycnocline is below the level of the grounding line, or if an obstacle such as a sea-bed ridge obscures access of the warm, salty lower layer to the ice front, as is the case for Pine Island Glacier~\cite{DeRydt2014JGeophysResOceans}. 
 
 %talk about each of the drafts in question]
 In the case of a constant basal slope (figure~\ref{fig:Numerics:Geometry}a), the melt rates display the characteristic subglacial plume behaviour, which was described in \S2\ref{S:ExampleSolutions}: briefly, the melt rate increases from the grounding line, reaching a maximum several hundreds of metres downstream, before decreasing towards zero. For the ambient temperature used to generate the solutions shown in figure~\ref{fig:Numerics:Geometry}a, the thermal driving is strong, and thus the melt rates remain positive: the ice shelf is not long enough for the plume to become supercooled. Each of the three approximations are identical when the ice shelf base in this constant slope case, and show good agreement with the numerical solution (figure~\ref{fig:Numerics:Geometry}a).
@@ -899,7 +871,7 @@ The parameters used in figure~\ref{fig:Numerics:PycnoclinePosition} represent th
 
 \begin{figure}
 \centering
-\includegraphics[width = 0.99\textwidth]{Submitted_PRSA/make_plots/plots/figure7.pdf}
+\includegraphics[width = 0.9\textwidth]{Submitted_PRSA/make_plots/plots/figure7.pdf}
 \caption{Comparison between numerically obtained melt rates $\dot{m}= M_0 U \Delta T$ (solid curves), the B21 approximation (coloured dashed curves) and the L19 approximation (black dashed curve), for the case of two layer stratification and a constant basal slope. Results are shown for different pycnocline positions $Z_0$ (colours, as indicated by the legend in (a)). In each case, the parameters are as in table~\ref{T:Constants}, except for (a) $Z_{gl} = -3000$, $T_l = -1$ and $T_u = -3$ and (c)  $S_u = 33.0$~PSU. Note that for the L19 approximation, we take the constant ambient temperature and salinity to be the average of the values above and below the pycnocline. The panels along the left-hand side of each subplot indicate which part of the B21 approximation is appropriate at that particular depth (i.e. which of the regions discussed in \S\ref{S:MeltRate}), for the case of a pycnocline centred at $Z_0/\ell_0 = 0.25$.}\label{fig:Numerics:PycnoclinePosition}
 \end{figure}
 
@@ -916,11 +888,11 @@ Figure~\ref{fig:Numerics:PycnoclinePosition} demonstrates that the B21 approxima
 \subsection{Including Non-planar Basal Geometry and Stratification}
 \begin{figure}
 \centering
-\includegraphics[width = 0.99\textwidth]{Submitted_PRSA/make_plots/plots/figure8.png}
+\includegraphics[width = 0.9\textwidth]{Submitted_PRSA/make_plots/plots/figure8.png}
 \caption{Comparison between numerically obtained melt rates $\dot{m}= M_0 U \Delta T$ (purple curves), the B21 approximation (green curves) and the L19AH approximation (orange curves), with two layer stratification. Results are shown for several difference basal geometries as follows: (a) `quadratic'~\eqref{E:Numerics:QuadraticGeometry}, (b) `idealized Ross'~\eqref{E:Numerics:RealisticGeometry}, (c) `sinusoidal~\eqref{E:Numerics:SinusoidalGeometry}, and (d) `piecewise linear' ~\eqref{E:Numerics:PiecewiseGeometry} (the geometries corresponding to (a), (b) and (d) are shown schematically in the insets in figure~\ref{fig:Numerics:Geometry}(b), (c) and (d), respectively, while the geometry corresponding to (b) is shown as an inset in that plot). In each subplot, the left and right hand plots correspond a relatively deep pycnocline and relatively shallow pycnocline, respectively.  The parameters used to generate the results shown here are as in table~\ref{T:Constants}. }\label{fig:Numerics:pycnocline_and_geometry_idealized}
 \end{figure}
 
-Finally, we assess the performance of the B21 approximation in the case of a non-constant basal slope and two-layer ambient stratification. The comparison between the approximations and numerical solutions is presented in figure~\ref{fig:Numerics:pycnocline_and_geometry_idealized} (we do not include the L19 approximation in this assessment, as it was shown in \S5\ref{S:Numerics:NoPycnocline} to perform poorly for non-constant basal slopes). Here, we consider two different pycnocline positions, one relatively deep and one relatively shallow, for each of four geometries: the quadratic, sinusoidal, and piecewise linear geometries referred to earlier (shown schematically in the insets in figure~\ref{fig:Numerics:Geometry}b,c, and d, respectively), as well as a fourth geometry 
+Finally, we assess the performance of the B21 approximation in the case of a non-constant basal slope and two-layer ambient stratification. The comparison between the approximations and numerical solutions is presented in figure~\ref{fig:Numerics:pycnocline_and_geometry_idealized} (we do not include the L19 approximation in this assessment, as it was shown in \S5\ref{S:Numerics:NoPycnocline} to perform poorly for non-constant basal slopes). Here, we consider two different pycnocline positions, one relatively deep and one relatively shallow, for each of four geometries: the quadratic, sinusoidal, and piecewise linear geometries referred to earlier (shown schematically in the insets in figure~\ref{fig:Numerics:Geometry}(b), (c), and (d), respectively), as well as a fourth geometry 
 \begin{equation}\label{E:Numerics:RealisticGeometry}
 \frac{Z_b(X)}{\left[Z\right]}= \frac{X}{\left[X\right]} -4.2\left(\frac{X}{\left[X\right]}\right)^2 + 12.8\left(\frac{X}{\left[X\right]}\right)^3.
 \end{equation}
@@ -935,7 +907,7 @@ The sinusoidal case (figure~\ref{fig:Numerics:pycnocline_and_geometry_idealized}
 Finally, in the piecewise linear case (figure~\ref{fig:Numerics:pycnocline_and_geometry_idealized}d), the agreement between numerical solutions and the B21 approximation is surprisingly good for the most part, although there is a significant error for the plume intrusion depth in the high pycnocline case. This agreement occurs despite the violation of the geometric assumptions, and is especially surprising for a low pycnocline: the discontinuity in the geometry occurs above the pycnocline, where we expect errors associated with geometry to be accentuated. 
 
 \section{Conclusions}\label{S:Discussion}
-In this paper, we have presented an asymptotic analysis of the equations describing subglacial plumes~\cite{Jenkins1991JGeophysResOceans, Jenkins2011JPhysOcean} with non-constant basal slopes and two layer ambient stratification. We then constructed an approximation to the melt rate that emerges from numerical solutions of the model equations, which builds upon this analysis. This approximation agrees well with numerical solutions, provided that assumptions on the basal topography are not violated. In addition, we have demonstrated that this approximation improves upon those of~\citet{Lazeroms2019JPhysOcean}, on which some of the current state of the art two-dimensional melt rate parametrizations are based.
+We have presented an asymptotic analysis of the equations describing subglacial plumes~\cite{Jenkins1991JGeophysResOceans, Jenkins2011JPhysOcean} with non-constant basal slopes and two layer ambient stratification. We then constructed an approximation to the melt rate that emerges from numerical solutions of the model equations, which builds upon this analysis. This approximation agrees well with numerical solutions, provided that assumptions on the basal topography are not violated. We further demonstrated that this approximation improves upon those of~\citet{Lazeroms2019JPhysOcean}, on which some of the current state of the art two-dimensional melt rate parametrizations are based.
 
 Our asymptotic analysis exploits the small size of several dimensionless parameters; in particular, the small basal slopes that are typical for ice shelves in Antarctica, the relative slenderness of the pycnocline, and the relatively weak thermal driving. This analysis reveals the presence of four distinct solution regions, depending on the proximity to the grounding line, the proximity to the pycnocline, and the speed of the plume. The approximation to the melt rate we constructed was similarly split according to these regions, albeit with clear boundaries between them rather than matching conditions, as in the asymptotic analysis. Only in the region closest to the grounding line do the corresponding leading order equations have an analytic solution, i.e. our approximation to the melt rate has an asymptotically well-defined error only in this region. 
 
@@ -955,13 +927,13 @@ Other possible pragmatic issues include our use of an idealized ambient stratifi
 
 %\dataccess{Insert data access text here.}
 
-%\aucontribute{Insert author contribute text here.}
+\aucontribute{AB and RA conceived of the study. AB produced the analysis and drafted the manuscript. RA and CRW helped draft the manuscript and supervised the project. AJ critically reviewed the manuscript.}
 
 %\competing{Insert competing text here.}
 
 %\funding{Insert funding text here.}
 
-%\ack{Insert acknowledgment text here.}
+\ack{A. T. B. is supported by the NERC Grant NE/S010475/1}
 
 
 %%%%%%%%%% Insert bibliography here %%%%%%%%%%%%%%
