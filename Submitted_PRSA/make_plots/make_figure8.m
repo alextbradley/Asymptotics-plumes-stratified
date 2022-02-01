@@ -105,9 +105,11 @@ for i = [1,4,2,3]
 
      
     for Z0 = [Z0_lo, Z0_hi]
+        tic
         sol =  GetPlumeDimensional(Ti, Si, T0, T1, S0, S1, Z0, rho0, zgl, L, ci,lt,g,Cd,...
                                       c, bs, bt, E0, St, lambda1, lambda2, lambda3, tau,...
                                       Xb(i,:), Zb(i,:), dZb(i,:));
+                                  tfull = toc
         %process
         %evaluate on Xb grid pts
         %find where draft pts within solution interval (should include zero)
@@ -148,12 +150,15 @@ for i = [1,4,2,3]
         %plot(M_Lzrms_adhoc, Z + zgl, 'color', colmap(3,:), 'linewidth',3);
         
         %add constructed melt rate
+        tic
         [M_AB,X_AB] = GetConstructedMeltRate(zbFs{i}, dzbFs{i}, d2zbFs{i}, d3zbFs{i},...
             Z0/l0, Pt, Pb, delta, kappa);
+        tAB = toc
         
         %make plots
         subplot(2,4,pltcnt); hold on
         plot([0, 0], [0, max(Z)] + zgl,'--', 'color', [1,1,1]*169/255, 'HandleVisibility', 'off'); %zero melting
+      
         plot(Melt_rate, Z + zgl, 'color', colmap(1,:), 'linewidth', 3);
         plot(M_Lzrms_adhoc, Zlz + zgl, 'color', colmap(3,:), 'linewidth', 3);
         plot(M_AB * M0 * U_scale * delta_T_scale *secs_per_yr, X_AB*X_scale*alpha + zgl, 'color', colmap(4,:),'linewidth', 3)
@@ -175,24 +180,44 @@ end
 
 fig = gcf; 
 fig.Position(3:4) = [1200 750];
-subplot(2,4,1); txta = text(-3.5, 0, '(a)','interpreter', 'latex', 'fontsize', 16);
+subplot(2,4,1); txta = text(-3.5, 100, '(a)','interpreter', 'latex', 'fontsize', 16);
 legend({'Numerics', 'L19AH',  'B21'}, 'interpreter', 'latex', 'fontsize', 16);
-subplot(2,4,3); txtb = text(-18, 0, '(b)','interpreter', 'latex', 'fontsize', 16);
-subplot(2,4,5); txtc = text(-11.8, 0, '(c)','interpreter', 'latex', 'fontsize', 16);
-subplot(2,4,7); txtd = text(-18, 0, '(d)','interpreter', 'latex', 'fontsize', 16);
+subplot(2,4,3); txtb = text(-17, 100, '(b)','interpreter', 'latex', 'fontsize', 16);
+subplot(2,4,5); txtc = text(-11.8, 100, '(c)','interpreter', 'latex', 'fontsize', 16);
+subplot(2,4,7); txtd = text(-17, 100, '(d)','interpreter', 'latex', 'fontsize', 16);
 
-% inset schematic
-ax = axes;
-ax.Position = [0.82, 0.6,0.08, 0.08];
-ax.XTick = [];
-ax.YTick = [];
-fill([Xb(4,:), flip(Xb(4,:))], [zeros(size(Xb(4,:))), flip(Zb(4,:))], 'b')
+
+%% add titles
+fntsz = 13;
+subplot(2,4,1); title('Quadratic, deep pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,2); title('Quadratic, shallow pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,3); title('Realistic, deep pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,4); title('Realistic, shallow pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,5); title('Sinusoidal, deep pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,6); title('Sinusoidal, shallow pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,7); title('Piecewise, deep pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+subplot(2,4,8); title('Piecewise, shallow pycnocline', 'interpreter', 'latex', 'fontsize', fntsz);
+
+%% inset schematic
+w = 0.08; 
+h = 0.08;
+inset_pos = [ 0.41, 0.6, w, h  ; %linear
+              0.1, 0.1, w, h  ;  %sinusoidal
+              0.82, 0.1, w, h;    %piecewise
+              0.82, 0.6, w,h   ];%realistic [0.82, 0.6,0.08, 0.08]
+            
+for i = 4
+ax(i) = axes;
+ax(i).Position = inset_pos(i,:);
+ax(i).XTick = [];
+ax(i).YTick = [];
+fill([Xb(i,:), flip(Xb(i,:))], [zeros(size(Xb(i,:))), flip(Zb(i,:))], 'b')
 ylim([0, abs(zgl)])
 xlim([0, abs(zgl)/alpha])
 xticks([]);
 yticks([]);
 hold on
-plot(ax.XLim,ax.YLim, 'k--');
-
+plot(ax(i).XLim,ax(i).YLim, 'k--');
+end
 % save?
 %saveas(gcf,'plots/figure8.png')

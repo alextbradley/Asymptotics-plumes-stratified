@@ -7,6 +7,11 @@
 addpath('Auxillary_functions');
 figpref(4);
 
+%uncomment for R2020a
+set(0, 'defaultaxesfontsize', 12);
+set(0, 'defaultaxeslinewidth', 1.5);
+set(0, 'defaultlinelinewidth', 1.5);
+set(0, 'defaultpatchlinewidth', 0.7); 
 %% parameters
 run parameters %get dimensional parameters (brings them all into global scope)
 
@@ -36,20 +41,19 @@ u_scaling = kappa^(1/4)*(dzb_xc)^(1/2)*Qc^(1/2);
 p_scaling = kappa^(3/4)*(dzb_xc)^(1/2)*Qc^(1/2);
 
 % Far field conditions
-chi_ff        = -10*chi_scaling; %choose matching point (|X_ff| >> 1, X_ff < 0) Note: length scale is eps1^(3/4) \approx 0.05, so in reality we probably only need 1 length scale (i.e. no need to ramp X_ff up too massively)
+chi_ff      = -10*chi_scaling; %choose matching point (|X_ff| >> 1, X_ff < 0) Note: length scale is eps1^(3/4) \approx 0.05, so in reality we probably only need 1 length scale (i.e. no need to ramp X_ff up too massively)
 U_ff        = (-chi_ff)^(1/3)*dzb_xc^(2/3)*Qc^(1/3)*kappa^(1/3) ;
 D_ff        = (-chi_ff)^(-1/3)*dzb_xc^(-2/3)*Qc^(2/3)*kappa^(-1/3);
 delta_P_ff  = -chi_ff*dzb_xc*kappa;
 delta_T_ff  = -(-chi_ff)^(1/3)*Qc^(2/3)*dzb_xc^(1/3) * kappa^(-1/3);
 Y0          = [D_ff,U_ff, delta_P_ff,delta_T_ff];
 
-
 %% Plot 1:
 figure(1); clf; 
 ax1 = subplot(1,2,1); hold on
 colmap = parula(3); %colormap for full solutions
 %horizontal line where negatively buoyant
-plot([0,2.5], [0,0], 'k', 'linewidth', 1.5)
+plot([0,2.5], [0,0], 'k', 'linewidth', 1.5, 'HandleVisibility', 'off')
 
 %Full equations (regular parameters):
 M1   = @(chi,Y) mass1(chi,Y, k2);
@@ -73,7 +77,7 @@ options = odeset('Mass',M1, 'RelTol', 1e-6, 'AbsTol', 1e-6);
 [chi2, Y2]  = ode15s(rhs1,[chi_ff,abs(chi_ff)],Y0,options);
 U2 = Y2(:,2);
 delta_P2 = Y2(:,3);
-plot(U2/u_scaling, delta_P2/p_scaling,'color',colmap(2,:), 'linewidth',3)
+plot(U2/u_scaling, delta_P2/p_scaling,'color',colmap(2,:), 'linewidth',2)
 
 
 %numerical solution rescaled LO equations:
@@ -88,7 +92,7 @@ options = odeset('Mass',M2, 'RelTol', 1e-6,'AbsTol', 1e-6);
 [chi_reduced, Y_reduced] = ode15s(rhs2,[chi_ff_reduced,abs(chi_ff_reduced)],Y0_tilde,options);
 U_tilde = Y_reduced(:,1);
 delta_P_tilde = Y_reduced(:,2);
-plot(U_tilde, delta_P_tilde, 'k--','linewidth', 2.5)
+plot(U_tilde, delta_P_tilde, 'k--','linewidth', 2)
 
 
 %tidy plot
@@ -112,8 +116,8 @@ xlabel('$\tilde{\mathcal{U}}$', 'interpreter','latex')
 
 ax2 = subplot(1,2,2); hold on
 plot([-10,5], [0,0], 'k', 'linewidth', 1.5)
-plot(chi1/chi_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',3)
-plot(chi2/chi_scaling, delta_P2/p_scaling,'color',  colmap(2,:), 'linewidth',3)
+plot(chi1/chi_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',2)
+plot(chi2/chi_scaling, delta_P2/p_scaling,'color',  colmap(2,:), 'linewidth',2)
 plot(chi_reduced, delta_P_tilde,'k--', 'linewidth',2.5)
 box on
 xlabel('$\tilde{\chi}$', 'interpreter','latex')
@@ -126,7 +130,10 @@ fig = gcf;fig.Position(3:4) = [900,325];
 txta= text(ax1,-0.6,10, '(a)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
 txtb= text(ax2,-13.5,10, '(b)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
 
-% saveas(gcf,'plots/figure5.png')
+legend(ax1, {'$\tilde{\Delta \rho} = \tilde{{u}}^3$', '$\epsilon_1 = 3\times 10^{-2}$', '$\epsilon_1 = 3\times 10^{-3}$', 'Reduced equations', ''},...
+    'interpreter', 'latex', 'location', 'northwest')
+% saveas(gcf,'plots/figure5.png') %figure 5 in original submission
+% saveas(gcf,'plots/supp_fig1.png')
 %% functions
 function M = mass1(chi,Y, k2)
 %return the mass matrix for the solution method 1 (solving full equations

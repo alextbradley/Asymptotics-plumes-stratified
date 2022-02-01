@@ -31,7 +31,7 @@ function [MM,XX] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, Z0, Pt, Pb, d
 % lambda:   Scalar (= kappa in the ms)
 
 %% Find pycnocline position in terms of X
-XX = linspace(0,1,1e3); 
+XX = linspace(0,1,1e2); 
 [~,idx] = min(abs(zbF(XX) - Z0));
 X0 = XX(idx);
 
@@ -44,9 +44,14 @@ U_below = zeros(1,length(X_below));  %initialize
 
 integrand = @(x) lambda^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
 for i = 1:length(X_below)
-    Q_below(i) =  (2/3 *integral(integrand, 0, X_below(i)))^(3/2);
+    %Q_below(i) =  (2/3 *integral(integrand, 0, X_below(i)))^(3/2);
+    q = [0, X_below(1:i)];
+    qq = [0,integrand(X_below(1:i))];
+    Q_below(i) =  (2/3 *trapz(q, qq))^(3/2);
+    %U_below(i) = lambda^(1/3) * dzbF(X_below(i))^(4/3) * (1 - zbF(X_below(i)))^(1/3) * ...
+    %    (2/3 *integral(integrand, 0, X_below(i)))^(1/2)/dzbF(X_below(i)); %recall u = Q'/zb' in this region
     U_below(i) = lambda^(1/3) * dzbF(X_below(i))^(4/3) * (1 - zbF(X_below(i)))^(1/3) * ...
-        (2/3 *integral(integrand, 0, X_below(i)))^(1/2)/dzbF(X_below(i)); %recall u = Q'/zb' in this region
+        (2/3 *trapz(q, qq))^(1/2)/dzbF(X_below(i)); %recall u = Q'/zb' in this region
 end
 D_below = Q_below./U_below;
 delta_rho_below = U_below.^2./D_below ./dzbF(X_below);
@@ -116,7 +121,7 @@ end
 
 % Compile terms in expansion
 vareps  = xstar - X0; %parameter initicating how far beyong x_out we can go
-X_upper_inner = linspace(0,1, 1e3); %scaled variable for upper
+X_upper_inner = linspace(0,1, 1e2); %scaled variable for upper
 X_upper = X_out + vareps*X_upper_inner; %we'll chop this down later, when the  appropriate x_star (where u = 1/2 u_out occurs) has been determined
 
 Q_upper_first_term = K1*X_upper_inner;

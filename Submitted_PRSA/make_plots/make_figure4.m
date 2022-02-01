@@ -53,8 +53,8 @@ end
 figure(1); clf;
 eps1s = [eps1,eps1/10];
 deltas = [delta, delta/10];
-colmap = [76, 67, 176;
-    87, 196, 197 ]/255;
+colmap = [0, 0, 255;
+    87, 196, 80 ]/255;
 lw = 2.5;       %linewidth of plots
   
 for i = 1:2
@@ -76,7 +76,8 @@ for i = 1:2
     subplot(1,3,1); hold on
     %first add pycnocline box
     if i == 1
-        fill([0.25, 0.4, 0.4, 0.25], [-2, -2, 2,2], [135,206,250]/255, 'linestyle', 'none', 'facealpha', 0.5);
+        fill([0.25, 0.4, 0.4, 0.25], [-2, -2, 2,2], [135,206,250]/255, ...
+            'linestyle', 'none', 'facealpha', 0.5, 'HandleVisibility', 'off');
     end
     plot(U,xi, 'color', colmap(i,:), 'linewidth', lw);
     
@@ -90,7 +91,7 @@ for i = 1:2
     %thermal driving
     subplot(1,3,3); hold on
     if i == 1
-        fill([-0.5, 0.6, 0.6, -0.5], [-2, -2, 2,2], [135,206,250]/255, 'linestyle', 'none', 'facealpha', 0.5);
+        fill([-0.5, 0.6, 0.6, -0.5], [-2, -2, 2,2], [135,206,250]/255, 'linestyle', 'none', 'facealpha', 0.5, 'HandleVisibility', 'off');
     end
     plot(delta_T,xi, 'color', colmap(i,:), 'linewidth', lw);
     
@@ -123,16 +124,16 @@ delta_T_out = (-Q_out*dzb_x0 + U_out*dzb_x0*(1 - zb_x0 -2*Pt))/U_out;
 %velocity
 subplot(1,3,1); hold on
 plot(U_A,xi_A, 'k--', 'linewidth', lw);
-plot(U_out*ones(1,length(xi)), xi, '--','color', [170,170,170]/255 , 'linewidth', lw)
-plot(U_in*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255,'linewidth', lw)
+plot(U_out*ones(1,length(xi)), xi, '--','color', [170,170,170]/255 , 'linewidth', lw, 'HandleVisibility', 'off')
+plot(U_in*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255,'linewidth', lw , 'HandleVisibility', 'off')
 xlabel('$U$', 'interpreter', 'latex'); ylabel('$\zeta$', 'interpreter', 'latex');
 box on
 
 %buoyancy deficit
 subplot(1,3,2);hold on
 plot(delta_rho_A,xi_A, 'k--', 'linewidth', lw);
-plot(delta_rho_in*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255, 'linewidth', lw)
-plot(delta_rho_out*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255, 'linewidth', lw)
+plot(delta_rho_in*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255, 'linewidth', lw, 'HandleVisibility', 'off')
+plot(delta_rho_out*ones(1,length(xi)), xi,'--', 'color', [170,170,170]/255, 'linewidth', lw, 'HandleVisibility', 'off')
 xlabel('$\Delta \rho$',  'interpreter', 'latex'); ylabel('$\zeta$',  'interpreter', 'latex');
 box on
 xlim([0, 0.7])
@@ -140,8 +141,8 @@ xlim([0, 0.7])
 %thermal driving
 subplot(1,3,3); hold on
 plot(delta_T_LO,xi_LO, 'k--', 'linewidth', lw);
-plot(delta_T_in*ones(1,length(xi)), xi, '--', 'color', [170,170,170]/255,'linewidth', lw)
-plot(delta_T_out*ones(1,length(xi)), xi, 'k--','color', [170,170,170]/255, 'linewidth', lw)
+plot(delta_T_in*ones(1,length(xi)), xi, '--', 'color', [170,170,170]/255,'linewidth', lw, 'HandleVisibility', 'off')
+plot(delta_T_out*ones(1,length(xi)), xi, 'k--','color', [170,170,170]/255, 'linewidth', lw, 'HandleVisibility', 'off')
 xlabel('$\Delta T$',  'interpreter', 'latex'); ylabel('$\zeta$',  'interpreter', 'latex');
 box on
 xlim([-0.5, 0.6])
@@ -149,9 +150,25 @@ xlim([-0.5, 0.6])
 
 %% tidy
 fig = gcf;
-fig.Position =  [84 473 1168 325];
+fig.Position(3:4) =  [1168 325];
+subplot(1,3,1); lab{1} = text(0.21,10,'(a)', 'interpreter', 'latex', 'FontSize', 16);
+subplot(1,3,2); lab{2} = text(-0.19,10,'(b)', 'interpreter', 'latex', 'FontSize', 16);
+subplot(1,3,3); lab{3} = text(-0.8,10,'(c)', 'interpreter', 'latex', 'FontSize', 16);
 
+leg= legend({'$(\epsilon_1, \delta) = (3, 0.5) \times 10^{-2}$', '$(\epsilon_1, \delta) = (3, 0.5) \times 10^{-3}$','Reduced equations'}, ...
+    'Interpreter', 'latex', 'Location', 'SouthWest');
 
+shg
+
+subplot(1,3,1);
+txtout{1} = text(0.267, 1, '$U = U_{\mathrm{out}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
+txtin{1} = text(0.355, -9, '$U = U_{\mathrm{in}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
+subplot(1,3,2)
+txtout{2} = text(0.3, 2.5, '$\Delta \rho = \Delta \rho_{\mathrm{out}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
+txtin{2} = text(0.64, -9.5, '$\Delta \rho = \Delta \rho_{\mathrm{in}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
+subplot(1,3,3)
+txtout{3} = text(-0.2, -4, '$\Delta T = \Delta T_{\mathrm{out}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
+txtin{3} = text(0.42, -9.5, '$\Delta T = \Delta T_{\mathrm{in}}$', 'interpreter', 'latex', 'FontSize', 16, 'Rotation', 90);
 
 %% functions
 function M = massmat_full(xi,Y, c1,c2)

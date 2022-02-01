@@ -35,7 +35,8 @@ Y0 = [D_0, U_0, Delta_rho_0, Delta_T_0];
 rhs = @(X,Y) forcing(X,Y,Xb,Zb, dZb, E0, g, rho0, lambda3, St, L, c, Cd,Delta_rho_ief, drhoa_dZ, Delta_T_a, Delta_T_ief);
 M = @(X,Y) massmat(X,Y);
 options = odeset('Mass',M, 'Events',@plumeEventsFcn,...
-                 'RelTol', 1e-7);
+                 'RelTol', 1e-7,...
+             'AbsTol', 1e-7);
 sol  = ode45(rhs,[0,max(Xb)],Y0,options);
 
 

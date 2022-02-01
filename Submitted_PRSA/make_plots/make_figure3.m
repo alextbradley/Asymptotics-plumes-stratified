@@ -18,9 +18,9 @@ starty = 0.07;
 height = 0.4;
 positions = zeros(4, ncols, 2);
 for p = 1:2
-for q = 1:ncols
-positions(:,q,p) = [startx + (q-1)*colgap + (q-1)*width, starty + (p-1)*rowgap+ (p-1)*height, width, height];
-end
+    for q = 1:ncols
+        positions(:,q,p) = [startx + (q-1)*colgap + (q-1)*width, starty + (p-1)*rowgap+ (p-1)*height, width, height];
+    end
 end
 ps = positions;
 ps(:,:,1) = positions(:,:,2);
@@ -68,17 +68,17 @@ zb = zbF(xb);    %ice draft at grid points
 %% Numerical solution of full equations
 %solve the equations
 i = 1;
-figure(1);clf; 
+figure(1);clf;
 region1y = [0, 0, 0.15, 0.15]; %y co-ordinates of region 1 shaed box
 region2y = [0.15, 0.15, 0.25, 0.25];
 region3y = [0.25, 0.25, 0.5, 0.5];
 region4y = [0.5, 0.5, 0.552, 0.552];
 
-for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there   
+for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     %solve the plume equations and return a solution structure
     tic; sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, kappa, X0,zbF,dzbF, Xmax); toc
     sols{i} = sol;
-    count = 1; 
+    count = 1;
     
     %evaluate on a regular grid
     x = sol.x;
@@ -94,10 +94,10 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     %%%%%%Thickness%%%%%%%
     subplot('Position', positions(:,count,i)); hold on; box on
     if i ==2
-    fill([0,1,1,0],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
-    fill([0,1,1,0],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
-    fill([0,1,1,0],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
-    fill([0,1,1,0],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
+        fill([0,1,1,0],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
+        fill([0,1,1,0],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
+        fill([0,1,1,0],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
+        fill([0,1,1,0],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
     end
     plot(d,x,'color', cmap, 'linewidth', 3);
     xlim([0,1])
@@ -107,18 +107,21 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     plot(xl, x(end)*[1,1], '--', 'color', dlc); %add dashed x-stop line
     xlim(xl); %reset xlim in case previous line messes it up
     count = count + 1;
-    if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
+    if i == 1
+        plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc);
         txa = text(-0.3, 1.2, '(a)', 'FontSize', 16, 'interpreter', 'latex');
         txastop = text(0.05, 1.13, '$X = X_{\mathrm{stop}} \approx 1.1$', 'FontSize', 14, 'interpreter', 'latex');
         txax0 = text(0.69, 0.375, '$Z = |Z_{gl}| $', 'FontSize', 14, 'interpreter', 'latex');
-
+        
     else
+        plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc);
+        txax0 = text(0.69, 0.35, '$Z = |Z_{gl}| $', 'FontSize', 14, 'interpreter', 'latex');
         plot(xl,X0*[1,1],'-.', 'color', dlc);
         txb = text(-0.3, 0.6, '(b)', 'FontSize', 16, 'interpreter', 'latex');
-        txbx0 = text(0.55, 0.22, '$X = X_0 = 0.2$', 'FontSize', 14, 'interpreter', 'latex');
+        txbx0 = text(0.55, 0.22, '$X = X_p = 0.2$', 'FontSize', 14, 'interpreter', 'latex');
         txbstop = text(0.05, 0.572, '$X = X_{\mathrm{stop}} \approx 0.55$', 'FontSize', 14, 'interpreter', 'latex');
     end
-
+    
     
     %%%%%Velocity%%%%%
     subplot('Position', positions(:,count,i)); hold on; box on
@@ -138,17 +141,18 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     xlim(xl); %reset xlim in case previous line messes it up
     yticks([])
     count = count + 1;
-    if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
-    else plot(xl,X0*[1,1],'-.', 'color', dlc);
-    end    
+    plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc);
+    if i == 2
+        plot(xl,X0*[1,1],'-.', 'color', dlc);
+    end
     
     %%%%%Buoyancy deficit%%%%%%
     subplot('Position', positions(:,count,i)); hold on; box on
     if i ==2
-    fill([-0.25,1,1,-0.25],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
-    fill([-0.25,1,1,-0.25],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
-    fill([-0.25,1,1,-0.25],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
-    fill([-0.25,1,1,-0.25],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
+        fill([-0.25,1,1,-0.25],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
+        fill([-0.25,1,1,-0.25],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
+        fill([-0.25,1,1,-0.25],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
+        fill([-0.25,1,1,-0.25],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
     end
     plot(delta_rho,x,'color', cmap, 'linewidth', 3);
     %ylabel('x')
@@ -159,23 +163,24 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     xlim(xl); %reset xlim in case previous line messes it up
     yticks([])
     count = count + 1;
-    if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
-    else
+    plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc);
+    if i == 2
         plot(xl,X0*[1,1],'-.', 'color', dlc);
         tx1 = text(-.2, 0.07, '$1$', 'FontSize', 16, 'interpreter', 'latex');
         tx2 = text(-.2, 0.22,  '$2$', 'FontSize', 16, 'interpreter', 'latex');
-        tx3 = text(-.2, 0.33, '$3$', 'FontSize', 16, 'interpreter', 'latex');
+        tx3 = text(-.2, 0.37, '$3$', 'FontSize', 16, 'interpreter', 'latex');
         tx4 = text(-.2, 0.52,  '$4$', 'FontSize', 16, 'interpreter', 'latex');
     end
     
-    %plot solution melt rate
+    %%%% Melt Rate %%%%
     subplot('Position', positions(:,count,i)); hold on; box on
     if i ==2
-    fill([-0.1,.2,.2,-0.1],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
-    fill([-0.1,.2,.2,-0.1],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
-    fill([-0.1,.2,.2,-0.1],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
-    fill([-0.1,.2,.2,-0.1],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
+        fill([-0.1,.2,.2,-0.1],region1y, 'b', 'FaceAlpha', 0.1, 'linestyle', 'none');
+        fill([-0.1,.2,.2,-0.1],region2y, 'b', 'FaceAlpha', 0.2, 'linestyle', 'none');
+        fill([-0.1,.2,.2,-0.1],region3y, 'b', 'FaceAlpha', 0.3, 'linestyle', 'none');
+        fill([-0.1,.2,.2,-0.1],region4y, 'b', 'FaceAlpha', 0.4, 'linestyle', 'none');
     end
+    plot([0,0], [0,1.2 - 0.6*(i-1)], 'color', dlc, 'linewidth', 1) %vertical line thru zero: where does refreezing take over
     plot(delta_T.*u,x,'color', cmap, 'linewidth', 3);
     %ylabel('x')
     xlabel('$M = U \Delta T$','interpreter', 'latex')
@@ -185,11 +190,13 @@ for X0 = [l0, x0] %first loop sets pycnocline very high, i.e. as if not there
     xlim(xl); %reset xlim in case previous line messes it up
     yticks([])
     count = count + 1;
-    if i == 1; plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc); 
-    else plot(xl,X0*[1,1],'-.', 'color', dlc);
-    end   
+    plot(xl, abs(zgl/l0)*[1,1], ':', 'color', dlc);
+    if i == 2 
+        plot(xl,X0*[1,1],'-.', 'color', dlc);
+    end
     i = i + 1;
 end
+
 
 %figure sizing
 fig = gcf;

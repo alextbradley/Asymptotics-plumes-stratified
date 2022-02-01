@@ -80,7 +80,7 @@ dzbFs = {@(x) 1; ...
     @(x) 1 + (amp/l0)*(2*pi*X_scale/per) *cos(2*pi*x*X_scale/per) ;...
     @(x) (1*(x <= Xb_cross/X_scale) + slope2*(x > Xb_cross/X_scale))};
 %% Loop over each bathymetry
-for i = 3
+for i = 1:4
     sol =  GetPlumeDimensional(Ti, Si, T0, T1, S0, S1, Z0, rho0, zgl, L, ci,lt,g,Cd,...
                                       c, bs, bt, E0, St, lambda1, lambda2, lambda3, tau,...
                                       Xb(i,:), Zb(i,:), dZb(i,:));
@@ -96,7 +96,7 @@ for i = 3
     
     %plot solution
     figure(1);
-    subplot(2,2,i);
+    subplot(2,2,i); hold on; box on
     plot(Melt_rate, Z+zgl, 'color', colmap(1,:), 'linewidth', 3);
     ylim([zgl,0])
     
@@ -150,7 +150,7 @@ for i = 3
 end
 
 %% plot tidying
-figure(1); 
+%figure(1); 
 fig = gcf;
 fig.Position(3:4) =  [1074 640];
 
@@ -158,7 +158,7 @@ fig.Position(3:4) =  [1074 640];
 ax = gca;
 subplot(2,2,1);txta = text(-1.5, 0, '(a)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
 subplot(2,2,2);txtb = text(-1.5, 0, '(b)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-legend({"Numerics", "L19", "L19AH","B21"}, 'interpreter', 'latex')
+legend({"Numerics", "L19", "L19AH","B22"}, 'interpreter', 'latex')
 subplot(2,2,3);txtc = text(-3, 0, '(c)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
 subplot(2,2,4);txtd = text(-10 - 1.5 * 25/6, 0, '(d)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
 
