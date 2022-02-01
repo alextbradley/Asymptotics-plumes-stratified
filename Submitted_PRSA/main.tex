@@ -747,7 +747,7 @@ In theory, we have made two improvements upon the L19 and L19AH approximations: 
 \subsection{Isolating Basal Geometry}\label{S:Numerics:NoPycnocline}
 \begin{figure}
 \centering
-\includegraphics[width = 0.9\textwidth]{./make_plots/plots/figure6.png}
+\includegraphics[width = 0.9\textwidth]{./make_plots/plots/figure5.png}
 \caption{Comparison between\rout{ numerically obtained} melt rates $\dot{m}= M_0 U \Delta T$ \blue{from the stratified plume model} (purple curves) and the three approximations: B22 (green curves), L19AH (orange curves), and L19 (black dashed curves). Each subplot corresponds to a different ice shelf basal geometry as follows (shown schematically in the insets): (a) linear, $Z_b(X) = \alpha X$, (b) quadratic~\eqref{E:Numerics:QuadraticGeometry}, (c) linear with periodic oscillations superimposed~\eqref{E:Numerics:SinusoidalGeometry}, and (d) piecewise linear~\eqref{E:Numerics:PiecewiseGeometry}. Note that the three approximations to the melt rate are identical for the constant basal slope case in (a).  Here we use parameter values as in table~\ref{T:Constants}, except for imposing a constant ambient temperature and salinity, which we take as $ 0.5\si{\celsius}$ and $34.3~\text{PSU}$, respectively. Note that the upper limit of each the plots, $Z + Z_{gl} = 0$, corresponds to sea level, which acts as an upper bound on the extent of the ice shelf base.}   \label{fig:Numerics:Geometry}
 \end{figure}
 
@@ -786,7 +786,7 @@ The parameters used in figure~\ref{fig:Numerics:PycnoclinePosition}\blue{a--c} r
 
 \begin{figure}
 \centering
-\includegraphics[width = \textwidth]{./make_plots/plots/figure7.pdf}
+\includegraphics[width = \textwidth]{./make_plots/plots/figure6.pdf}
 \caption{Comparison between \rout{numerically obtained }melt rates $\dot{m}= M_0 U \Delta T$ \blue{from the stratified plume model} (solid curves), the B22 approximation (coloured dashed curves) and the L19 approximation (black dashed curve), for the case of two layer stratification and a constant basal slope. \blue{In (a)--(c),} \rout{R}\blue{r}esults are shown for different pycnocline positions $Z_p$ [colours, as indicated by the legend in (a)]. In each \rout{case}\blue{of these}, the parameters are as in table~\ref{T:Constants}, except for (a) $Z_{gl} = -3000$~m, $T_l = -1~\si{\celsius}$ and $T_u = -3~\si{\celsius}$\blue{, which correspond to a deep grounding line, and cold ambient conditions,} and (c)  $S_u = 33.0$~PSU\blue{, which corresponds to strong ambient salinity stratification}.  The panels along the left-hand side of each \rout{subplot}\blue{of (a)--(c)} indicate which of the regions discussed in \S\ref{S:MeltRate} for the B22 approximation is appropriate at that particular depth, for the case of a pycnocline centred at $Z_p/\ell = 0.25$. \blue{In (d), results are shown for different pycnocline thicknesses $\ell_p$ (colours, as indicated by the legend). All parameters are as in table~\ref{T:Constants}, with the pycnocline centred on a depth $Z = 500$~m.} Note that for the L19 approximation, we take the constant ambient temperature and salinity to be the average of the values above and below the pycnocline \blue{centre}.}\label{fig:Numerics:PycnoclinePosition}
 \end{figure}
 
@@ -805,7 +805,7 @@ Figure~\ref{fig:Numerics:PycnoclinePosition} demonstrates that the B22 approxima
 \subsection{Including Non-planar Basal Geometry and Stratification}
 \begin{figure}
 \centering
-\includegraphics[width = \textwidth]{./make_plots/plots/figure8.png}
+\includegraphics[width = \textwidth]{./make_plots/plots/figure7.png}
 \caption{Comparison between \rout{numerically obtained }melt rates $\dot{m}= M_0 U \Delta T$ \blue{from the stratified plume model} (purple curves), the B22 approximation (green curves) and the L19AH approximation (orange curves), with two layer stratification. Results are shown for several difference basal geometries as follows: (a) `quadratic'~\eqref{E:Numerics:QuadraticGeometry}, (b) `idealized Ross'~\eqref{E:Numerics:RealisticGeometry}, (c) `sinusoidal~\eqref{E:Numerics:SinusoidalGeometry}, and (d) `piecewise linear' ~\eqref{E:Numerics:PiecewiseGeometry} (the geometries corresponding to (a), (b) and (d) are shown schematically in the insets in figure~\ref{fig:Numerics:Geometry}(b), (c) and (d), respectively, while the geometry corresponding to (b) is shown as an inset in that plot). In each subplot, the left and right hand plots correspond a relatively deep pycnocline and relatively shallow pycnocline, respectively \blue{; the pycnocline position is indicated by the grey dot-dashed line}. The parameters used to generate the results shown here are as in table~\ref{T:Constants}. \blue{Vertical grey dashed lines indicate the a zero melt rate.} }\label{fig:Numerics:pycnocline_and_geometry_idealized}
 \end{figure}
 

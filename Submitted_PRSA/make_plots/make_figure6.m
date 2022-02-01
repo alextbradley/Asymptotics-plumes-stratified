@@ -1,191 +1,359 @@
-%Make figure 6 in the manuscript: produce a comparison between (1)
-%numerical solutions of the full equations, (2) the Lazeroms
-%parametrization, (3) the Lazeroms parametrization w/ ad hoc adjustment and
-%(4) my parametrization for four different ice shelf basal geometries as
-%specified in the manuscript
+%Produce figure 7 in the manuscript.
+%Solve equations in a flat bathymetry with ambient stratification. Compare new parametrization with
+%lazeroms and numerical solutions for different positions of the
+%pycnocline (a)--(c) and different values of lt (d)
+
 %% Preliminaries
-clear 
-addpath('Auxillary_functions')
-figpref(4)
-%clc
-
+addpath('Auxillary_functions');
+figpref(4);
 figure(1); clf;
-colmap = [74, 67, 176;
-          81, 146, 246;
-          244, 177, 115
-           119,205, 156]/255; 
+colmap = parula(6);
+w = 0.20; 
+h = 0.8;
+positions = [0.07, 0.1, w, h;
+             0.35, 0.1, w, h;
+             0.58, 0.1, w, h;
+             0.77, 0.1, w, h]; %subplot positions on page
+ncols = 4;
+colgap = 0.055; 
+width = 0.19;
+startx = (1 -width*ncols - (ncols-1)*colgap)/2;
+startx = 0.06;
+starty = 0.1;
+height = 0.80;
+positions = zeros(4,ncols);
+for p = 1:ncols
+positions(p,:) = [startx + (p-1)*colgap + (p-1)*width, starty , width, height];
+end
 %% Parameters
-run parameters.m %get dimensional parameters, introduces variables into global scope
-Z0 = 1e10; %put the pycnocline v high so we never get anywhere near
-T0 = (T0 + T1)/2; %set the ambient to mean of upper and lower values
-S0 = (S0 + S1)/2; 
+run parameters %get dimensional parameters 
+zgl = -3000; %make artificially deeper so that transition to 0 appears
+T0  = -1;
+T1  = -3;
+tau = T0 - (lambda1*S0 + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0  = tau/lambda3;%lengthscale of freezing pt dependence
 
-%adjust tau and l0 to account for these new scales
-tau     = T0 - (lambda1*S0 + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
-l0      = tau/lambda3;%lengthscale of freezing pt dependence
+x0s = 0.05:0.05:0.25; %dimensionless pycnocline position
 
-%variable scales:
-D_scale         = E0*l0;
+%relevant variable scales:
 U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
-delta_rho_scale = rho0*bs*S0*tau/(L/c);
 delta_T_scale   = E0 *alpha * tau/St;
 X_scale         = tau/lambda3 /alpha;
+
+%also define scales for lazeroms (uses mean of salnity and temp)
+Tave = (T0 + T1)/2;
+Save = (S0 + S1)/2;
+tauLz = Tave - (lambda1*Save + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0Lz  = tau/lambda3;%lengthscale of freezing pt dependence
+U_scaleLz = sqrt(bs*Save*g*l0Lz*tauLz*E0*alpha/(L/c) / Cd);
+delta_T_scaleLz   = E0 *alpha * tauLz/St;
+X_scaleLz = tauLz/lambda3/alpha;
+
+%dimensionless parameters
+eps1 = E0*alpha/Cd;
+eps2 = E0*alpha/St;
+eps3 = tau/(L/c);
+eps4 = (S0 - S1)/2/S0;
+delta = lt/l0;
+Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
+Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau; %
+lambda = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+Xmax = abs(zgl)/l0; %depth corresponding to ice shelf draft
+M0 = St/(L/c);
+k2 = eps2/eps1;
+
+colmap = parula(length(x0s) + 1);
+%% Ice shelf draft
+zbF = @(X) X;
+dzbF = @(X) 1 + 0*X;
+d2zbF = @(X) 0*X;
+d3zbF = @(X) 0*X;
+
+xb = linspace(0,Xmax,1000); %bathymetry grid points
+zb = zbF(xb);    %ice draft at grid points
+%% Loop over positions of pycnocline
+figure(1); clf;
+subplot('Position', positions(1,:)); hold on
+
+%add grey line indicating melt/freezing line
+plot([0,0], [zgl,0], 'color', 169/255 *ones(1,3),  'HandleVisibility', 'off');
+
+%add lazeroms/integral expression first (doesn't know anything about the pycnocline)
+X_lz = linspace(0, Xmax*1.5);  %nb sol goes complex when above X = 1 (ignore)
+Q_lz = zeros(1,length(X_lz));
+U_lz = zeros(1,length(X_lz));  %initialize
+
+integrand = @(x) lambda^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
+for i = 1:length(X_lz)
+    Q_lz(i) =  (2/3 *integral(integrand, 0, X_lz(i)))^(3/2);
+    U_lz(i) = lambda^(1/3) * dzbF(X_lz(i))^(4/3) * (1 - zbF(X_lz(i)))^(1/3) * ...
+        (2/3 *integral(integrand, 0, X_lz(i)))^(1/2)/dzbF(X_lz(i)); %recall u = Q'/zb' in this region
+end
+delta_T_lz = (-Q_lz.*dzbF(X_lz) + U_lz.*dzbF(X_lz).*(1-zbF(X_lz)))./U_lz;
+plot(M0*U_scaleLz*delta_T_scaleLz*secs_per_yr*delta_T_lz.*U_lz, X_lz*X_scaleLz*alpha + zgl, 'k--',  'HandleVisibility', 'off')
+
+for i = 1:length(x0s)
+    %solve numerically:
+    sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0s(i),zbF,dzbF, Xmax);
+    x1 = sol.x;
+    x1 = linspace(0,x1(end),1000); %regular grid to put solution on
+    Y = deval(sol,x1);
+    U = Y(2,:);       %dimensionless velocity
+    delta_T = Y(4,:); %dimensionless temperature
+    plot(M0*U_scale*delta_T_scale*secs_per_yr*U.*delta_T, x1*X_scale*alpha + zgl, 'color', colmap(i,:));
     
+    %add my melt rate
+    [M_AB, X_AB] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, x0s(i), Pt, Pb, delta, lambda);
+    plot(M0*U_scale*delta_T_scale*secs_per_yr*M_AB, X_AB*X_scale*alpha + zgl,...
+        '--', 'color', colmap(i,:),'HandleVisibility', 'off');
+    
+    legendinfo{i} = ['$Z_p/\ell = ' num2str(x0s(i)) '$'];
+end
+legend(legendinfo, 'interpreter', 'latex', 'location', 'northeast')
+    
+%tidy plot
+xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
+ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
+box on
+ylim([zgl, 0])
+yticks(-3000:1000:0)
+
+xlim([-10,10])
+ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txta = text(-15, 300, '(a)', 'Interpreter', 'latex', 'FontSize', 16);
+t1 = title({'deep grounding line', 'cold ambient'}, 'interpreter', 'latex');
+%% Repeat for the more conventional parameters
+run parameters %get dimensional parameters (be careful with global variable names)
+
+%variable scales:
+U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
+delta_T_scale   = E0 *alpha * tau/St;
+X_scale         = tau/lambda3 /alpha;
+
+%also define scales for lazeroms (uses mean of salnity and temp)
+Tave = (T0 + T1)/2;
+Save = (S0 + S1)/2;
+tauLz = Tave - (lambda1*Save + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0Lz  = tau/lambda3;%lengthscale of freezing pt dependence
+U_scaleLz = sqrt(bs*Save*g*l0Lz*tauLz*E0*alpha/(L/c) / Cd);
+delta_T_scaleLz   = E0 *alpha * tauLz/St;
+X_scaleLz = tauLz/lambda3/alpha;
+
+%add grey line indicating melt/freezing line
+subplot('Position', positions(2,:)); hold on
+plot([0,0], [zgl, 0], 'color', 169/255 *ones(1,3));
+
+%dimensionless parameters
+eps1 = E0*alpha/Cd;
+eps2 = E0*alpha/St;
+eps3 = tau/(L/c);
+eps4 = (S0 - S1)/2/S0;
+eps5 = E0/2;
+delta = lt/l0;
+Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
+Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau; %
+lambda = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+Xmax = abs(zgl)/l0; %depth corresponding to ice shelf draft
 M0 = St/(L/c);    %melt rate prefactor
-kappa = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0; %kappa in the ms
-%% Ice Drafts:
-N = 1e3; %Number of pts in the draft
-Xb = zeros(4, N);
-Zb = zeros(4, N); %initialize arrays. 4 different geometries
-dZb= zeros(4, N);
+k2 = eps2/eps1;
 
-% Geometry 1: linear
-Xb(1,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
-%Run from eps so that numerical solution (starts at 0) can be evaluated at
-%first draft point
-Zb(1,:) = alpha*Xb(1,:);
-dZb(1,:) = alpha*ones(size(Xb(1,:)));
+%add lazeroms/integral expression first (doesn't know anything about the pycnocline)
+X_lz = linspace(0, Xmax*1.5);
+Q_lz = zeros(1,length(X_lz));
+U_lz = zeros(1,length(X_lz));  %initialize
 
-% Geometry 2: gently decreasing
-X_scale = l0/alpha;
-Xb(2,:) = linspace(eps, abs(zgl)/alpha*2, N);  %l0/alpha is X lengthscale (need to run to longer because takes longer to reach zgl with negative curvature)
-p  = 0.45; %controls strength of curvature 
-Zb(2,:) = l0*(Xb(2,:)/X_scale - p* (Xb(2,:)/X_scale).^2);
-dZb(2,:) = l0*(1/X_scale - 2*p* (Xb(2,:)/X_scale^2));
+integrand = @(x) lambda^(1/3).*(1 - x).^(1/3); %integrand used in analytic solution below thermocline
+for i = 1:length(X_lz)
+    Q_lz(i) =  (2/3 *integral(integrand, 0, X_lz(i)))^(3/2);
+    U_lz(i) = lambda^(1/3) * dzbF(X_lz(i))^(4/3) * (1 - zbF(X_lz(i)))^(1/3) * ...
+        (2/3 *integral(integrand, 0, X_lz(i)))^(1/2)/dzbF(X_lz(i)); %recall u = Q'/zb' in this region
+end
+delta_T_lz = (-Q_lz.*dzbF(X_lz) + U_lz.*dzbF(X_lz).*(1-zbF(X_lz)))./U_lz;
+plot(M0*U_scaleLz*delta_T_scaleLz*delta_T_lz.*U_lz*secs_per_yr, X_lz*X_scaleLz*alpha + zgl, 'k--')
 
-% Geometry 3: sinusoidal
-Xb(3,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
-amp = 30; %amplitude of sin
-per = 1e5; %period of sin
-Zb(3,:) = alpha*Xb(3,:) + amp*sin(2*pi*Xb(3,:)/per);
-dZb(3,:) = alpha*ones(size(Xb(3,:))) + (amp*2*pi/per)*cos(2*pi*Xb(3,:)/per);
-
-% Geometry 4:  piecewise linear
-%change slope in second half by a factor of slope2
-Xb(4,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
-lx = length(Xb);
-Xb_cross = Xb(4,floor(lx/2)); %where the jump occurs
-slope2 = 2; 
-jump = slope2*alpha*Xb(4,floor(lx/2) + 1) - alpha*Xb(4,floor(lx/2)); %jump incurred if we dont shift second half
-Zb(4,:) = [alpha*Xb(4,1:floor(lx/2)), slope2*alpha*Xb(4,floor(lx/2) + 1: end) - jump];
-dZb(4,:) = [alpha*ones(1,floor(lx/2)), slope2*alpha*ones(1,lx -floor(lx/2))] ;
-
-% Store as anonymous functions for the integral
-zbFs = {@(x) x; ...
-    @(x) x - p*x.^2;...
-    @(x) x + (amp/l0)*sin(2*pi*x*X_scale/per);...
-    @(x) (x.*(x <= Xb_cross/X_scale) + (slope2*x - jump/l0).*(x > Xb_cross/X_scale))};
-dzbFs = {@(x) 1; ...
-    @(x) 1 - 2*p*x; ...
-    @(x) 1 + (amp/l0)*(2*pi*X_scale/per) *cos(2*pi*x*X_scale/per) ;...
-    @(x) (1*(x <= Xb_cross/X_scale) + slope2*(x > Xb_cross/X_scale))};
-%% Loop over each bathymetry
-for i = 1:4
-    sol =  GetPlumeDimensional(Ti, Si, T0, T1, S0, S1, Z0, rho0, zgl, L, ci,lt,g,Cd,...
-                                      c, bs, bt, E0, St, lambda1, lambda2, lambda3, tau,...
-                                      Xb(i,:), Zb(i,:), dZb(i,:));
-
-    %process solution
-    idx = ((Xb(i,:) > min(sol.x)) + (Xb(i,:) < max(sol.x)))>1;  %find where draft pts within solution interval (should include zero)
-    X = Xb(i,idx);
-    Y = deval(sol, Xb(i,idx));
-    Z = X*alpha;
-    U = Y(2,:);         %dimensionless velocity
-    delta_T = Y(4,:);   %dimensionless temperature
-    Melt_rate = M0*U.*delta_T*secs_per_yr; %melt rate in metres per year
+for i = 1:length(x0s)
+    %solve numerically:
+    sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0s(i),zbF,dzbF, Xmax);
+    x2 = sol.x;
+    x2 = linspace(0,x2(end),1000); %regular grid to put solution on
+    Y = deval(sol,x2);
+    U = Y(2,:);       %dimensionless velocity
+    delta_T = Y(4,:); %dimensionless temperature
+    plot(M0*U.*delta_T*U_scale*delta_T_scale*secs_per_yr, x2*X_scale*alpha + zgl, 'color', colmap(i,:));
     
-    %plot solution
-    figure(1);
-    subplot(2,2,i); hold on; box on
-    plot(Melt_rate, Z+zgl, 'color', colmap(1,:), 'linewidth', 3);
-    ylim([zgl,0])
+    %add my melt rate
+    [M_AB, X_AB] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, x0s(i), Pt, Pb, delta, lambda);
+    plot(M0*U_scale*delta_T_scale*secs_per_yr*M_AB, X_AB*X_scale*alpha + zgl,...
+        '--', 'color', colmap(i,:),'HandleVisibility', 'off');
     
-    %add Lazeroms/constant draft  ("_L19")
-    x = X/X_scale;
-    zbF = zbFs{1};   %index 1 has constant slope and draft
-    dzbF = dzbFs{1}; %index 1 has constant slope and draft
-    Q_L19 = zeros(1,length(x)); %dimensionless flux
-    U_L19 = zeros(1,length(x)); %dimensionless velocity
+end
+xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
+ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
+box on
+ylim([zgl,0])
+xlim([-5,12])
+ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txtb = text(-9.5, 150, '(b)', 'Interpreter', 'latex', 'FontSize', 16);
+title({'typical conditions',' '}, 'interpreter', 'latex')
+%% Repeat with strong stratification: force the plume to terminate
+run parameters
+S1 = 33.0;
 
-    integrand = @(x) kappa^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
-    for j = 1:length(x)
-        Q_L19(j) =  (2/3 *integral(integrand, 0, x(j)))^(3/2);
-        U_L19(j) = kappa^(1/3) * dzbF(x(j))^(4/3) * (1 - zbF(x(j)))^(1/3) * ...
-            (2/3 *integral(integrand, 0, x(j)))^(1/2)/dzbF(x(j)); %u = Q'/zb' in this region
-    end
-    delta_T_L19 = (-Q_L19.*dzbF(x) + U_L19.*dzbF(x).*(1-zbF(x)))./U_L19;
-    M_L19_ND = delta_T_L19.*U_L19;
-    M_L19    = M0 * U_scale * delta_T_scale * M_L19_ND * secs_per_yr;
-    hold on
-    plot(M_L19, Z+zgl, 'k--');
-    
-    %add Lazeroms (ad-hoc adjustment)
-    dzbF = dzbFs{i};      %get the actual slope of this scenario
-    U_scale_L19AH         = sqrt(bs*S0*g*l0*tau*E0*(dzbF(x)*alpha)/(L/c) / Cd); %extra factor of alpha because dzbF is non-dimensional
-    delta_T_scale_L19AH   = E0 *(dzbF(x) *alpha) * tau/St;
-    M_L19AH               = M0 * U_scale_L19AH .* delta_T_scale_L19AH .* M_L19_ND * secs_per_yr;
-    plot(M_L19AH, Z+zgl, 'color', colmap(3,:), 'linewidth', 3);
-    
-    %add my integral solution using anonymous function ("_B21")
-    zbF = zbFs{i};
-    dzbF = dzbFs{i};
-    Q_B21 = zeros(1,length(x)); %remember lower case x is dimensionless
-    U_B21 = zeros(1,length(x));  %initialize
+%variable scales:
+U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
+delta_T_scale   = E0 *alpha * tau/St;
+X_scale         = tau/lambda3 /alpha;
 
-    integrand = @(x) kappa^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
-    for j = 1:length(x)
-        Q_B21(j) =  (2/3 *integral(integrand, 0, x(j)))^(3/2);
-        U_B21(j) = kappa^(1/3) * dzbF(x(j))^(4/3) * (1 - zbF(x(j)))^(1/3) * ...
-            (2/3 *integral(integrand, 0, x(j)))^(1/2)/dzbF(x(j)); %recall u = Q'/zb' in this region
-    end
-    delta_T_B21 = (-Q_B21.*dzbF(x) + U_B21.*dzbF(x).*(1-zbF(x)))./U_B21;
-    M_B21 = M0 * U_scale * delta_T_scale * U_B21 .* delta_T_B21 *secs_per_yr;
-    subplot(2,2,i)
-    plot(M_B21, Z+zgl, 'color', colmap(4,:),'linewidth', 3)
-        
-    %styling
-    xlabel('melt rate (m~yr\textsuperscript{-1})', 'interpreter', 'latex')
-    ylabel('$Z + Z_{gl}$ (m)', 'interpreter', 'latex')
-    yticks(-1500:500:0)
+%also define scales for lazeroms (uses mean of salnity and temp)
+Tave = (T0 + T1)/2;
+Save = (S0 + S1)/2;
+tauLz = Tave - (lambda1*Save + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0Lz  = tau/lambda3;%lengthscale of freezing pt dependence
+U_scaleLz = sqrt(bs*Save*g*l0Lz*tauLz*E0*alpha/(L/c) / Cd);
+delta_T_scaleLz   = E0 *alpha * tauLz/St;
+X_scaleLz = tauLz/lambda3/alpha;
+
+%add grey line indicating melt/freezing line
+subplot('Position', positions(3,:)); hold on
+plot([0,0], [zgl, 0], 'color', 169/255 *ones(1,3));
+
+%dimensionless parameters
+eps1 = E0*alpha/Cd;
+eps2 = E0*alpha/St;
+eps3 = tau/(L/c);
+eps4 = (S0 - S1)/2/S0;
+eps5 = E0/2;
+delta = lt/l0;
+Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
+Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau; %
+lambda = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+Xmax = abs(zgl)/l0; %depth corresponding to ice shelf draft
+M0 = St/(L/c);    %melt rate prefactor
+k2 = eps2/eps1;
+
+%add lazeroms/integral expression first (doesn't know anything about the pycnocline)
+X_lz = linspace(0, Xmax*1.5);
+Q_lz = zeros(1,length(X_lz));
+U_lz = zeros(1,length(X_lz));  %initialize
+
+integrand = @(x) lambda^(1/3).*(1 - x).^(1/3); %integrand used in analytic solution below thermocline
+for i = 1:length(X_lz)
+    Q_lz(i) =  (2/3 *integral(integrand, 0, X_lz(i)))^(3/2);
+    U_lz(i) = lambda^(1/3) * dzbF(X_lz(i))^(4/3) * (1 - zbF(X_lz(i)))^(1/3) * ...
+        (2/3 *integral(integrand, 0, X_lz(i)))^(1/2)/dzbF(X_lz(i)); %recall u = Q'/zb' in this region
+end
+delta_T_lz = (-Q_lz.*dzbF(X_lz) + U_lz.*dzbF(X_lz).*(1-zbF(X_lz)))./U_lz;
+plot(M0*U_scale*delta_T_scale*delta_T_lz.*U_lz*secs_per_yr, X_lz*X_scaleLz*alpha + zgl, 'k--')
+
+for i = 1:length(x0s)
+    %solve numerically:
+    sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0s(i),zbF,dzbF, Xmax);
+    x2 = sol.x;
+    x2 = linspace(0,x2(end),1000); %regular grid to put solution on
+    Y = deval(sol,x2);
+    U = Y(2,:);       %dimensionless velocity
+    delta_T = Y(4,:); %dimensionless temperature
+    plot(M0*U.*delta_T*U_scale*delta_T_scale*secs_per_yr, x2*X_scale*alpha + zgl, 'color', colmap(i,:));
+    
+    %add my melt rate
+    [M_AB, X_AB] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, x0s(i), Pt, Pb, delta, lambda);
+    plot(M0*U_scaleLz*delta_T_scale*secs_per_yr*M_AB, X_AB*X_scale*alpha + zgl,...
+        '--', 'color', colmap(i,:),'HandleVisibility', 'off');
+    
 end
 
-%% plot tidying
-%figure(1); 
-fig = gcf;
-fig.Position(3:4) =  [1074 640];
+xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
+ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
+box on
+ylim([zgl,0])
+xlim([-2, 12])
+ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txtc = text(-5.6, 150, '(c)', 'Interpreter', 'latex', 'FontSize', 16);
+title({'typical grounding line', 'strong ambient salinity strat.'}, 'interpreter', 'latex')
+% saveas(gcf,'plots/figure7.png')
 
-%a, b, c, d labels
-ax = gca;
-subplot(2,2,1);txta = text(-1.5, 0, '(a)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-subplot(2,2,2);txtb = text(-1.5, 0, '(b)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-legend({"Numerics", "L19", "L19AH","B22"}, 'interpreter', 'latex')
-subplot(2,2,3);txtc = text(-3, 0, '(c)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
-subplot(2,2,4);txtd = text(-10 - 1.5 * 25/6, 0, '(d)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
+%% Vary lp
+run parameters %get dimensional parameters (be careful with global variable names)
+lt = [25, 50, 100, 150, 200];
+%variable scales:
+U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
+delta_T_scale   = E0 *alpha * tau/St;
+X_scale         = tau/lambda3 /alpha;
 
+%also define scales for lazeroms (uses mean of salnity and temp)
+Tave = (T0 + T1)/2;
+Save = (S0 + S1)/2;
+tauLz = Tave - (lambda1*Save + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0Lz  = tau/lambda3;%lengthscale of freezing pt dependence
+U_scaleLz = sqrt(bs*Save*g*l0Lz*tauLz*E0*alpha/(L/c) / Cd);
+delta_T_scaleLz   = E0 *alpha * tauLz/St;
+X_scaleLz = tauLz/lambda3/alpha;
 
-%% add plots of the draft
-%plot draft
-w = 0.14; h = 0.14;
-inset_pos = [0.14, 0.75, w, h;
-       0.58, 0.62, w, h;
-       0.32, 0.12, w, h;
-        0.575, 0.12, w, h];
-        
-for i = 1:4
-    subplot(2,2,i)
-    ax = axes;
-    ax.Position = inset_pos(i,:);
-    fill([Xb(i,:), flip(Xb(i,:))], [zeros(size(Xb(i,:))), flip(Zb(i,:))], 'b')
-    ylim([0, abs(zgl)])
-    xlim([0, abs(zgl)/alpha])
-    if i == 2 %quadratic case needs extended x scale
-        [~, idx] = min(abs(Zb(i,:) - abs(zgl))); %find where Zb goes thru abs(zgl) 
-        xlim([0, Xb(i,idx)])
-    end
-     yticks([]); 
-     xticks([]);
+%add grey line indicating melt/freezing line
+subplot('Position', positions(4,:)); hold on
+plot([0,0], [zgl, 0], 'color', 169/255 *ones(1,3), 'HandleVisibility', 'off');
+
+%dimensionless parameters
+eps1 = E0*alpha/Cd;
+eps2 = E0*alpha/St;
+eps3 = tau/(L/c);
+eps4 = (S0 - S1)/2/S0;
+eps5 = E0/2;
+deltas = lt/l0;
+Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
+Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau; %
+lambda = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+Xmax = abs(zgl)/l0; %depth corresponding to ice shelf draft
+M0 = St/(L/c);    %melt rate prefactor
+k2 = eps2/eps1;
+x0 = 0.15; %constant x0 in this case
+
+%add lazeroms/integral expression first (doesn't know anything about the pycnocline)
+X_lz = linspace(0, Xmax*1.5);
+Q_lz = zeros(1,length(X_lz));
+U_lz = zeros(1,length(X_lz));  %initialize
+
+integrand = @(x) lambda^(1/3).*(1 - x).^(1/3); %integrand used in analytic solution below thermocline
+for i = 1:length(X_lz)
+    Q_lz(i) =  (2/3 *integral(integrand, 0, X_lz(i)))^(3/2);
+    U_lz(i) = lambda^(1/3) * dzbF(X_lz(i))^(4/3) * (1 - zbF(X_lz(i)))^(1/3) * ...
+        (2/3 *integral(integrand, 0, X_lz(i)))^(1/2)/dzbF(X_lz(i)); %recall u = Q'/zb' in this region
 end
+delta_T_lz = (-Q_lz.*dzbF(X_lz) + U_lz.*dzbF(X_lz).*(1-zbF(X_lz)))./U_lz;
+plot(M0*U_scaleLz*delta_T_scaleLz*delta_T_lz.*U_lz*secs_per_yr, X_lz*X_scaleLz*alpha + zgl, 'k--','HandleVisibility', 'off')
 
-%% save 
-% saveas(gcf,'plots/figure6.png')
+for i = 1:length(deltas)
+    %solve numerically:
+    delta = deltas(i);
+    sol = GetPlume(eps1,eps2, eps3,eps4,delta, Pb, Pt, lambda, x0,zbF,dzbF, Xmax);
+    x2 = sol.x;
+    x2 = linspace(0,x2(end),1000); %regular grid to put solution on
+    Y = deval(sol,x2);
+    U = Y(2,:);       %dimensionless velocity
+    delta_T = Y(4,:); %dimensionless temperature
+    plot(M0*U.*delta_T*U_scale*delta_T_scale*secs_per_yr, x2*X_scale*alpha + zgl, 'color', colmap(i,:));
+    
+    %add my melt rate
+    [M_AB, X_AB] = GetConstructedMeltRate(zbF, dzbF, d2zbF, d3zbF, x0, Pt, Pb, delta, lambda);
+    plot(M0*U_scale*delta_T_scale*secs_per_yr*M_AB, X_AB*X_scale*alpha + zgl,...
+        '--', 'color', colmap(i,:),'HandleVisibility', 'off');
+    
+    legendinfo{i} = ['$\ell_p  = ' num2str(lt(i)) '~m$'];
+    
+end
+legend(legendinfo, 'interpreter', 'latex', 'location', 'northeast')
+
+xlabel('melt rate (m/yr) ', 'interpreter', 'latex', 'FontSize', 16);
+ylabel('$Z + Z_{gl}$~(m)', 'interpreter', 'latex', 'FontSize', 16)
+box on
+ylim([zgl,0])
+xlim([-5,12])
+ax = gca; ax.FontSize = 16;
+ytickangle(90)
+txtd = text(-9.5, 150, '(d)', 'Interpreter', 'latex', 'FontSize', 16);
+title({'typical conditions', 'vary $\ell_p$'}, 'interpreter', 'latex')
+fig = gcf; fig.Position(3:4) = [1100, 482];
 

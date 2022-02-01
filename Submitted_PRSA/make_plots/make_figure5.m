@@ -1,186 +1,191 @@
-%Make figure 5: comparison between numerical solutions of the rescaled
-%equations and leading order form of rescaled equations. This code produces
-%two plots: the first presents the solutions in (u, p) space and the second
-%has two plots of the solution in (chi,u) and (chi, p) space.
-
+%Make figure 5 in the manuscript: produce a comparison between (1)
+%numerical solutions of the full equations, (2) the Lazeroms
+%parametrization, (3) the Lazeroms parametrization w/ ad hoc adjustment and
+%(4) my parametrization for four different ice shelf basal geometries as
+%specified in the manuscript
 %% Preliminaries
-addpath('Auxillary_functions');
-figpref(4);
+clear 
+addpath('Auxillary_functions')
+figpref(4)
+%clc
 
-%uncomment for R2020a
-set(0, 'defaultaxesfontsize', 12);
-set(0, 'defaultaxeslinewidth', 1.5);
-set(0, 'defaultlinelinewidth', 1.5);
-set(0, 'defaultpatchlinewidth', 0.7); 
-%% parameters
-run parameters %get dimensional parameters (brings them all into global scope)
+figure(1); clf;
+colmap = [74, 67, 176;
+          81, 146, 246;
+          244, 177, 115
+           119,205, 156]/255; 
+%% Parameters
+run parameters.m %get dimensional parameters, introduces variables into global scope
+Z0 = 1e10; %put the pycnocline v high so we never get anywhere near
+T0 = (T0 + T1)/2; %set the ambient to mean of upper and lower values
+S0 = (S0 + S1)/2; 
 
-%dimensionless parameters
-eps1 = E0*alpha/Cd;
-eps2 = E0*alpha/St;
-eps3 = tau/(L/c);
-eps4 = (S0 - S1)/2/S0;
-delta = lt/l0;
-Pb = (L/c)/tau * (S0 - S1) /2 / S0 *( 1- bt*(T0 - T1)/bs / (S0 - S1));
-Pt = (T0 - T1) / 2 / tau; %or Pt = (T0 - T1 + lambda1*(S0 - S1) / 2 / tau but makes little difference
-kappa = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0;
+%adjust tau and l0 to account for these new scales
+tau     = T0 - (lambda1*S0 + lambda2 + lambda3*zgl);%T_{a,0} - T_{f,0}
+l0      = tau/lambda3;%lengthscale of freezing pt dependence
 
-%order 1 quantities relevant for the transition region
-k2      = eps2/eps1;
-k3      = eps3/eps1;
-Qc      = 0.4;      %artifically provide some Qc (in reality determined as part of solution)
-Xc      = 0.4;      %as above
-zbF     = @(X)  X;  %linear draft
-dzbF    = @(X) 1 + 0*X; 
-dzb_xc  = dzbF(Xc);  
-zb_xc   = zbF(Xc);
+%variable scales:
+D_scale         = E0*l0;
+U_scale         = sqrt(bs*S0*g*l0*tau*E0*alpha/(L/c) / Cd);
+delta_rho_scale = rho0*bs*S0*tau/(L/c);
+delta_T_scale   = E0 *alpha * tau/St;
+X_scale         = tau/lambda3 /alpha;
+    
+M0 = St/(L/c);    %melt rate prefactor
+kappa = (S0 + S1)/2 / S0 - bt*(L/c)/ bs / S0; %kappa in the ms
+%% Ice Drafts:
+N = 1e3; %Number of pts in the draft
+Xb = zeros(4, N);
+Zb = zeros(4, N); %initialize arrays. 4 different geometries
+dZb= zeros(4, N);
 
-%variable scalings
-chi_scaling = kappa^(-1/4)*Qc^(1/2)*dzb_xc^(-1/2);
-u_scaling = kappa^(1/4)*(dzb_xc)^(1/2)*Qc^(1/2);
-p_scaling = kappa^(3/4)*(dzb_xc)^(1/2)*Qc^(1/2);
+% Geometry 1: linear
+Xb(1,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
+%Run from eps so that numerical solution (starts at 0) can be evaluated at
+%first draft point
+Zb(1,:) = alpha*Xb(1,:);
+dZb(1,:) = alpha*ones(size(Xb(1,:)));
 
-% Far field conditions
-chi_ff      = -10*chi_scaling; %choose matching point (|X_ff| >> 1, X_ff < 0) Note: length scale is eps1^(3/4) \approx 0.05, so in reality we probably only need 1 length scale (i.e. no need to ramp X_ff up too massively)
-U_ff        = (-chi_ff)^(1/3)*dzb_xc^(2/3)*Qc^(1/3)*kappa^(1/3) ;
-D_ff        = (-chi_ff)^(-1/3)*dzb_xc^(-2/3)*Qc^(2/3)*kappa^(-1/3);
-delta_P_ff  = -chi_ff*dzb_xc*kappa;
-delta_T_ff  = -(-chi_ff)^(1/3)*Qc^(2/3)*dzb_xc^(1/3) * kappa^(-1/3);
-Y0          = [D_ff,U_ff, delta_P_ff,delta_T_ff];
+% Geometry 2: gently decreasing
+X_scale = l0/alpha;
+Xb(2,:) = linspace(eps, abs(zgl)/alpha*2, N);  %l0/alpha is X lengthscale (need to run to longer because takes longer to reach zgl with negative curvature)
+p  = 0.45; %controls strength of curvature 
+Zb(2,:) = l0*(Xb(2,:)/X_scale - p* (Xb(2,:)/X_scale).^2);
+dZb(2,:) = l0*(1/X_scale - 2*p* (Xb(2,:)/X_scale^2));
 
-%% Plot 1:
-figure(1); clf; 
-ax1 = subplot(1,2,1); hold on
-colmap = parula(3); %colormap for full solutions
-%horizontal line where negatively buoyant
-plot([0,2.5], [0,0], 'k', 'linewidth', 1.5, 'HandleVisibility', 'off')
+% Geometry 3: sinusoidal
+Xb(3,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
+amp = 30; %amplitude of sin
+per = 1e5; %period of sin
+Zb(3,:) = alpha*Xb(3,:) + amp*sin(2*pi*Xb(3,:)/per);
+dZb(3,:) = alpha*ones(size(Xb(3,:))) + (amp*2*pi/per)*cos(2*pi*Xb(3,:)/per);
 
-%Full equations (regular parameters):
-M1   = @(chi,Y) mass1(chi,Y, k2);
-rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc);
-options = odeset('Mass',M1, 'RelTol', 1e-6,'AbsTol', 1e-6);
-[chi1, Y1]  = ode15s(rhs1,[chi_ff,abs(chi_ff)],Y0,options);
-U1 = Y1(:,2);
-delta_P1 = Y1(:,3);
+% Geometry 4:  piecewise linear
+%change slope in second half by a factor of slope2
+Xb(4,:) = linspace(eps, abs(zgl)/alpha, N);  %l0/alpha is X lengthscale
+lx = length(Xb);
+Xb_cross = Xb(4,floor(lx/2)); %where the jump occurs
+slope2 = 2; 
+jump = slope2*alpha*Xb(4,floor(lx/2) + 1) - alpha*Xb(4,floor(lx/2)); %jump incurred if we dont shift second half
+Zb(4,:) = [alpha*Xb(4,1:floor(lx/2)), slope2*alpha*Xb(4,floor(lx/2) + 1: end) - jump];
+dZb(4,:) = [alpha*ones(1,floor(lx/2)), slope2*alpha*ones(1,lx -floor(lx/2))] ;
 
-%plot nullcline as first layer
-plot(U1/u_scaling,(U1/u_scaling).^3,'color',  [170,170,170]/255, 'linewidth',3)
+% Store as anonymous functions for the integral
+zbFs = {@(x) x; ...
+    @(x) x - p*x.^2;...
+    @(x) x + (amp/l0)*sin(2*pi*x*X_scale/per);...
+    @(x) (x.*(x <= Xb_cross/X_scale) + (slope2*x - jump/l0).*(x > Xb_cross/X_scale))};
+dzbFs = {@(x) 1; ...
+    @(x) 1 - 2*p*x; ...
+    @(x) 1 + (amp/l0)*(2*pi*X_scale/per) *cos(2*pi*x*X_scale/per) ;...
+    @(x) (1*(x <= Xb_cross/X_scale) + slope2*(x > Xb_cross/X_scale))};
+%% Loop over each bathymetry
+for i = 1:4
+    sol =  GetPlumeDimensional(Ti, Si, T0, T1, S0, S1, Z0, rho0, zgl, L, ci,lt,g,Cd,...
+                                      c, bs, bt, E0, St, lambda1, lambda2, lambda3, tau,...
+                                      Xb(i,:), Zb(i,:), dZb(i,:));
 
-%result with typical values
-plot(U1/u_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',3)
+    %process solution
+    idx = ((Xb(i,:) > min(sol.x)) + (Xb(i,:) < max(sol.x)))>1;  %find where draft pts within solution interval (should include zero)
+    X = Xb(i,idx);
+    Y = deval(sol, Xb(i,idx));
+    Z = X*alpha;
+    U = Y(2,:);         %dimensionless velocity
+    delta_T = Y(4,:);   %dimensionless temperature
+    Melt_rate = M0*U.*delta_T*secs_per_yr; %melt rate in metres per year
+    
+    %plot solution
+    figure(1);
+    subplot(2,2,i); hold on; box on
+    plot(Melt_rate, Z+zgl, 'color', colmap(1,:), 'linewidth', 3);
+    ylim([zgl,0])
+    
+    %add Lazeroms/constant draft  ("_L19")
+    x = X/X_scale;
+    zbF = zbFs{1};   %index 1 has constant slope and draft
+    dzbF = dzbFs{1}; %index 1 has constant slope and draft
+    Q_L19 = zeros(1,length(x)); %dimensionless flux
+    U_L19 = zeros(1,length(x)); %dimensionless velocity
 
-%repeat with small parameters scaled down:
-eps1 = eps1/10; eps4 = eps4/10;
-M1   = @(chi,Y) mass1(chi,Y, k2);
-rhs1 = @(chi,Y) forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc);
-options = odeset('Mass',M1, 'RelTol', 1e-6, 'AbsTol', 1e-6);
-[chi2, Y2]  = ode15s(rhs1,[chi_ff,abs(chi_ff)],Y0,options);
-U2 = Y2(:,2);
-delta_P2 = Y2(:,3);
-plot(U2/u_scaling, delta_P2/p_scaling,'color',colmap(2,:), 'linewidth',2)
+    integrand = @(x) kappa^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
+    for j = 1:length(x)
+        Q_L19(j) =  (2/3 *integral(integrand, 0, x(j)))^(3/2);
+        U_L19(j) = kappa^(1/3) * dzbF(x(j))^(4/3) * (1 - zbF(x(j)))^(1/3) * ...
+            (2/3 *integral(integrand, 0, x(j)))^(1/2)/dzbF(x(j)); %u = Q'/zb' in this region
+    end
+    delta_T_L19 = (-Q_L19.*dzbF(x) + U_L19.*dzbF(x).*(1-zbF(x)))./U_L19;
+    M_L19_ND = delta_T_L19.*U_L19;
+    M_L19    = M0 * U_scale * delta_T_scale * M_L19_ND * secs_per_yr;
+    hold on
+    plot(M_L19, Z+zgl, 'k--');
+    
+    %add Lazeroms (ad-hoc adjustment)
+    dzbF = dzbFs{i};      %get the actual slope of this scenario
+    U_scale_L19AH         = sqrt(bs*S0*g*l0*tau*E0*(dzbF(x)*alpha)/(L/c) / Cd); %extra factor of alpha because dzbF is non-dimensional
+    delta_T_scale_L19AH   = E0 *(dzbF(x) *alpha) * tau/St;
+    M_L19AH               = M0 * U_scale_L19AH .* delta_T_scale_L19AH .* M_L19_ND * secs_per_yr;
+    plot(M_L19AH, Z+zgl, 'color', colmap(3,:), 'linewidth', 3);
+    
+    %add my integral solution using anonymous function ("_B21")
+    zbF = zbFs{i};
+    dzbF = dzbFs{i};
+    Q_B21 = zeros(1,length(x)); %remember lower case x is dimensionless
+    U_B21 = zeros(1,length(x));  %initialize
 
-
-%numerical solution rescaled LO equations:
-chi_ff_reduced = chi_ff/chi_scaling; %reduced far field conditions
-u_tilde_ff = (-chi_ff_reduced)^(1/3);
-p_tilde_ff = -chi_ff_reduced;
-Y0_tilde = [u_tilde_ff, p_tilde_ff];
- 
-M2   = @(chi,Y) mass2(chi,Y, k2, kappa);
-rhs2 = @(chi,Y) forcing2(chi,Y);
-options = odeset('Mass',M2, 'RelTol', 1e-6,'AbsTol', 1e-6);
-[chi_reduced, Y_reduced] = ode15s(rhs2,[chi_ff_reduced,abs(chi_ff_reduced)],Y0_tilde,options);
-U_tilde = Y_reduced(:,1);
-delta_P_tilde = Y_reduced(:,2);
-plot(U_tilde, delta_P_tilde, 'k--','linewidth', 2)
-
-
-%tidy plot
-box on
-ylim([-2, delta_P_ff/p_scaling])
-ylabel('$\tilde{\Delta \varrho}$', 'interpreter','latex')
-xlabel('$\tilde{\mathcal{U}}$', 'interpreter','latex')
-
-% %% Plot 2: v_tilde and p_tilde versus chi
-% figure(2); clf; 
-% subplot(2,1,1); hold on
-% plot(chi1/chi_scaling, U1/u_scaling,'color',  colmap(1,:), 'linewidth',3)
-% plot(chi2/chi_scaling, U2/u_scaling,'color',  colmap(2,:), 'linewidth',3)
-% plot(chi_reduced, U_tilde,'k--', 'linewidth',2.5)
-% box on
-% xlabel('$\tilde{\chi}$', 'interpreter','latex')
-% ylabel('$\tilde{u}$', 'interpreter','latex')
-% ylim([0,2.5])
-% xlim([-10,5])
-% xticks([-10:5:5])
-
-ax2 = subplot(1,2,2); hold on
-plot([-10,5], [0,0], 'k', 'linewidth', 1.5)
-plot(chi1/chi_scaling, delta_P1/p_scaling,'color',  colmap(1,:), 'linewidth',2)
-plot(chi2/chi_scaling, delta_P2/p_scaling,'color',  colmap(2,:), 'linewidth',2)
-plot(chi_reduced, delta_P_tilde,'k--', 'linewidth',2.5)
-box on
-xlabel('$\tilde{\chi}$', 'interpreter','latex')
-ylabel('$\tilde{\Delta \varrho}$', 'interpreter','latex')
-ylim([-2,10])
-xlim([-10,5])
-xticks(-10:5:5)
-fig = gcf;fig.Position(3:4) = [900,325];
-
-txta= text(ax1,-0.6,10, '(a)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
-txtb= text(ax2,-13.5,10, '(b)','Interpreter','latex', 'FontSize', ax1.XLabel.FontSize);
-
-legend(ax1, {'$\tilde{\Delta \rho} = \tilde{{u}}^3$', '$\epsilon_1 = 3\times 10^{-2}$', '$\epsilon_1 = 3\times 10^{-3}$', 'Reduced equations', ''},...
-    'interpreter', 'latex', 'location', 'northwest')
-% saveas(gcf,'plots/figure5.png') %figure 5 in original submission
-% saveas(gcf,'plots/supp_fig1.png')
-%% functions
-function M = mass1(chi,Y, k2)
-%return the mass matrix for the solution method 1 (solving full equations
-%with rescaled length and tanh == 1, sech == 0)
-D = Y(1); 
-U = Y(2);
-delta_P = Y(3); %dimensionless buoyancy deficit
-delta_T = Y(4); %dimensionless thermal driving
-
-M = [U, D, 0, 0;
-     U^2, 2*D*U, 0, 0;
-     U*delta_P, D*delta_P, D*U, 0;
-     k2*U*delta_T, k2*D*delta_T, 0, k2*D*U];
-
+    integrand = @(x) kappa^(1/3)*dzbF(x).^(4/3) .*(1 - zbF(x)).^(1/3); %integrand used in analytic solution below thermocline
+    for j = 1:length(x)
+        Q_B21(j) =  (2/3 *integral(integrand, 0, x(j)))^(3/2);
+        U_B21(j) = kappa^(1/3) * dzbF(x(j))^(4/3) * (1 - zbF(x(j)))^(1/3) * ...
+            (2/3 *integral(integrand, 0, x(j)))^(1/2)/dzbF(x(j)); %recall u = Q'/zb' in this region
+    end
+    delta_T_B21 = (-Q_B21.*dzbF(x) + U_B21.*dzbF(x).*(1-zbF(x)))./U_B21;
+    M_B21 = M0 * U_scale * delta_T_scale * U_B21 .* delta_T_B21 *secs_per_yr;
+    subplot(2,2,i)
+    plot(M_B21, Z+zgl, 'color', colmap(4,:),'linewidth', 3)
+        
+    %styling
+    xlabel('melt rate (m~yr\textsuperscript{-1})', 'interpreter', 'latex')
+    ylabel('$Z + Z_{gl}$ (m)', 'interpreter', 'latex')
+    yticks(-1500:500:0)
 end
 
-function f = forcing1(chi,Y,eps1,eps4, kappa, Pt,k3,zbF, dzbF,Xc)
-%return the forcing for the solution method 1 (solving full equation
-%with rescaled length and tanh == 1, sech == 0)
-D = Y(1);
-U = Y(2);
-delta_P = Y(3);
-delta_T = Y(4);
+%% plot tidying
+%figure(1); 
+fig = gcf;
+fig.Position(3:4) =  [1074 640];
 
-f = [eps1 * U * dzbF(Xc+eps1^(3/4)*chi) + eps1^(3/4) * k3 * U * delta_T;
-    D*delta_P*dzbF(Xc+eps1^(3/4)*chi) - U^2;
-    U*delta_T*(kappa - eps4);
-    eps1^(1/4) * (1 - 2*Pt  - zbF(Xc+eps1^(3/4)*chi)) * dzbF(Xc+eps1^(3/4)*chi) *U + ...
-        -U * delta_T - D*U*dzbF(Xc+eps1^(3/4)*chi)];
+%a, b, c, d labels
+ax = gca;
+subplot(2,2,1);txta = text(-1.5, 0, '(a)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
+subplot(2,2,2);txtb = text(-1.5, 0, '(b)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
+legend({"Numerics", "L19", "L19AH","B22"}, 'interpreter', 'latex')
+subplot(2,2,3);txtc = text(-3, 0, '(c)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
+subplot(2,2,4);txtd = text(-10 - 1.5 * 25/6, 0, '(d)', 'interpreter', 'latex', 'fontsize', ax.FontSize);
 
+
+%% add plots of the draft
+%plot draft
+w = 0.14; h = 0.14;
+inset_pos = [0.14, 0.75, w, h;
+       0.58, 0.62, w, h;
+       0.32, 0.12, w, h;
+        0.575, 0.12, w, h];
+        
+for i = 1:4
+    subplot(2,2,i)
+    ax = axes;
+    ax.Position = inset_pos(i,:);
+    fill([Xb(i,:), flip(Xb(i,:))], [zeros(size(Xb(i,:))), flip(Zb(i,:))], 'b')
+    ylim([0, abs(zgl)])
+    xlim([0, abs(zgl)/alpha])
+    if i == 2 %quadratic case needs extended x scale
+        [~, idx] = min(abs(Zb(i,:) - abs(zgl))); %find where Zb goes thru abs(zgl) 
+        xlim([0, Xb(i,idx)])
+    end
+     yticks([]); 
+     xticks([]);
 end
 
-function M = mass2(chi,Y, k2, lambda)
-%return the mass matrix for the reduced leading order equations (Note that
-%this matrix is diagonal so you could easily invert it by hand!)
-v       = Y(1); %rescaled speed
-q       = Y(2); %rescaled buoyancy
-M = [v,   0;
-    0,    k2*lambda];
-end
-
-function f = forcing2(chi,Y)
-%return the forcing for the reduced leading order equations
-v       = Y(1); %rescaled speed
-q       = Y(2); %rescaled buoyancy
-f = zeros(2,1); %ode15s needs a column vector
-f(1)    = q - v^3;
-f(2)    = -v*(q + chi);
-end
+%% save 
+% saveas(gcf,'plots/figure6.png')
 
