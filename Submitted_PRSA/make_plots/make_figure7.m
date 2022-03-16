@@ -1,3 +1,6 @@
+
+
+
 %make figure 7 of the manuscript.
 %Comparison between melt rate parametrizations and numerical solutions for
 %four different ice shelf basal topographies as follows:
@@ -181,7 +184,7 @@ end
 fig = gcf; 
 fig.Position(3:4) = [1200 750];
 subplot(2,4,1); txta = text(-3.5, 100, '(a)','interpreter', 'latex', 'fontsize', 16);
-legend({'Numerics', 'L19AH',  'B21'}, 'interpreter', 'latex', 'fontsize', 16);
+legend({'Numerics', 'L19AH',  'B22'}, 'interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,3); txtb = text(-17, 100, '(b)','interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,5); txtc = text(-11.8, 100, '(c)','interpreter', 'latex', 'fontsize', 16);
 subplot(2,4,7); txtd = text(-17, 100, '(d)','interpreter', 'latex', 'fontsize', 16);
